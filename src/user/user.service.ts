@@ -15,25 +15,38 @@ export class UserService {
 
   create(createUserDto: CreateUserDto) {
     const inputData = { ...createUserDto };
-    inputData.user_date_creation = new Date();
-    inputData.user_password = bcrypt.hashSync(createUserDto.user_password, 10);
-    inputData.whoCreated = 6;
+    inputData.date_creation = new Date();
+    inputData.password = bcrypt.hashSync(createUserDto.password, 10);
+    inputData.created_by = '20e0bea6-6c78-4ea8-b5c0-06233d83d455';
     return this.userRepository.save(inputData);
   }
 
   findAll() {
     return this.userRepository.find();
   }
-
-  findOne(user_id: number) {
-    return this.userRepository.findOneBy({ user_id });
+  findByEmail(email: string) {
+    return this.userRepository.findOneBy({ email });
   }
 
-  update(user_id: number, updateUserDto: UpdateUserDto) {
-    return this.userRepository.update(user_id, updateUserDto);
+  findOne(id: string) {
+    return this.userRepository.findOneBy({ id });
   }
 
-  remove(user_id: number) {
-    return this.userRepository.delete(user_id);
+  update(id: string, updateUserDto: UpdateUserDto) {
+    return this.userRepository.update(id, updateUserDto);
+  }
+
+  changePassword(id: string, updateUserDto: UpdateUserDto) {
+    /*const userPassword = user.password;
+    if (!bcrypt.compareSync(updateUserDto.password!, res?.password!))
+      throw new ConflictException();*/
+    const hashedPassword = {
+      password: bcrypt.hashSync(updateUserDto.password!, 10),
+    };
+    return this.userRepository.update(id, hashedPassword);
+  }
+
+  remove(id: string) {
+    return this.userRepository.delete(id);
   }
 }

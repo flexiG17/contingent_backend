@@ -1,4 +1,10 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity, Index,
+  JoinColumn, ManyToOne,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 enum Roles {
   ADMIN = 'Администратор',
@@ -8,29 +14,29 @@ enum Roles {
 
 @Entity()
 export class Users {
-  @PrimaryGeneratedColumn()
-  user_id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column()
-  user_name: string;
+  name: string;
 
   @Column()
-  user_email: string;
+  email: string;
 
   @Column()
-  user_password: string;
+  password: string;
 
   @Column({
     type: 'enum',
     enum: Roles,
     default: Roles.VIEWER,
   })
-  user_role: Roles;
+  role: Roles;
 
   @Column()
-  user_date_creation: Date;
+  date_creation: Date;
 
-  @OneToOne(() => Users)
-  @JoinColumn({ referencedColumnName: 'user_id' })
-  whoCreated: number;
+  @ManyToOne(() => Users)
+  @JoinColumn({ referencedColumnName: 'id' })
+  created_by: string;
 }
