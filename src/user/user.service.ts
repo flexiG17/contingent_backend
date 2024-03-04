@@ -4,6 +4,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Users } from './entities/user.entity';
 import { Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -13,10 +14,11 @@ export class UserService {
   ) {}
 
   create(createUserDto: CreateUserDto) {
-    const dataToSave = { ...createUserDto };
-    dataToSave.user_date_creation = new Date();
-    dataToSave.user_name = 'Имя из кода';
-    return this.userRepository.save(dataToSave);
+    const inputData = { ...createUserDto };
+    inputData.user_date_creation = new Date();
+    inputData.user_password = bcrypt.hashSync(createUserDto.user_password, 10);
+    inputData.whoCreated = 6;
+    return this.userRepository.save(inputData);
   }
 
   findAll() {

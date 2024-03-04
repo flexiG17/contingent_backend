@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 enum Roles {
   ADMIN = 'Администратор',
@@ -30,7 +30,7 @@ export class Users {
   @Column()
   user_date_creation: Date;
 
-  /*@OneToOne(() => Users)
-  @JoinColumn({ name: 'user_id' })
-  user_who_created: number;*/
+  @OneToOne(() => Users)
+  @JoinColumn({ referencedColumnName: 'user_id' })
+  whoCreated: number;
 }
