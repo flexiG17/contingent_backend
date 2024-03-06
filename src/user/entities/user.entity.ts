@@ -1,16 +1,11 @@
 import {
   Column,
-  Entity, Index,
-  JoinColumn, ManyToOne,
-  OneToOne,
+  Entity,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-
-enum Roles {
-  ADMIN = 'Администратор',
-  EDITOR = 'Редактор',
-  VIEWER = 'Читатель',
-}
+import { UserRoles } from '../interfaces/user.interface';
 
 @Entity()
 export class Users {
@@ -28,10 +23,10 @@ export class Users {
 
   @Column({
     type: 'enum',
-    enum: Roles,
-    default: Roles.VIEWER,
+    enum: UserRoles,
+    default: UserRoles.VIEWER,
   })
-  role: Roles;
+  role: UserRoles;
 
   @Column()
   date_creation: Date;

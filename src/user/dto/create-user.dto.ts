@@ -1,15 +1,11 @@
-enum Roles {
-  ADMIN = 'Администратор',
-  EDITOR = 'Редактор',
-  VIEWER = 'Читатель',
-}
+import { UserRoles } from '../interfaces/user.interface';
 
 export class CreateUserDto {
   id: string;
   name: string;
   mail: string;
   password: string;
-  role: Roles;
+  role: UserRoles;
   date_creation: Date;
   created_by: string;
 }
