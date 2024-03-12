@@ -3,6 +3,7 @@ import { LocalAuthGuard } from './local-auth.guard';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { IRequestWithUser } from '../interfaces/Request.interface';
+import { RolesGuard } from '../guard/roles.guard';
 
 @Controller('auth')
 export class AuthController {
