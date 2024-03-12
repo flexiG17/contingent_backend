@@ -1,11 +1,11 @@
-import { UserRoles } from '../interfaces/user.interface';
+import { UserRole } from '../../enums/role.enum';
 
 export class CreateUserDto {
   id: string;
   name: string;
   mail: string;
   password: string;
-  role: UserRoles;
+  role: UserRole;
   date_creation: Date;
   created_by: string;
 }

@@ -1,8 +1,4 @@
-export enum UserRoles {
-  ADMIN = 'Администратор',
-  EDITOR = 'Редактор',
-  VIEWER = 'Читатель',
-}
+import { UserRole } from '../../enums/role.enum';
 
 export interface UserInterface {
   id: string;
@@ -10,6 +6,6 @@ export interface UserInterface {
   name: string;
   email: string;
   password: string;
-  role: UserRoles;
+  role: UserRole;
   date_creation: Date;
 }

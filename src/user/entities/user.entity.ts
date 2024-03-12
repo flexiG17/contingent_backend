@@ -5,7 +5,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { UserRoles } from '../interfaces/user.interface';
+import { UserRole } from '../../enums/role.enum';
 
 @Entity()
 export class Users {
@@ -23,10 +23,10 @@ export class Users {
 
   @Column({
     type: 'enum',
-    enum: UserRoles,
-    default: UserRoles.VIEWER,
+    enum: UserRole,
+    default: UserRole.VIEWER,
   })
-  role: UserRoles;
+  role: UserRole;
 
   @Column()
   date_creation: Date;

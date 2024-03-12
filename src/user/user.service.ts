@@ -1,4 +1,4 @@
-import {ConflictException, Injectable} from '@nestjs/common';
+import { ConflictException, Injectable, Req } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -7,6 +7,7 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import process from 'process';
 import { IRequestWithUser } from '../interfaces/Request.interface';
+import { ChangeUserPasswordDto } from './dto/changePassword-user.dto';
 
 @Injectable()
 export class UserService {
@@ -49,21 +50,34 @@ export class UserService {
     });
   }
 
-  update(id: string, updateUserDto: UpdateUserDto) {
-    return this.userRepository.update(id, updateUserDto);
+  updateUser(id: string, updateUserDto: UpdateUserDto) {
+    return this.userRepository.update(id, {
+      ...updateUserDto,
+      password: bcrypt.hashSync(updateUserDto.password!, 10),
+    });
   }
 
-  changePassword(
-    id: string,
-    updateUserDto: UpdateUserDto,
-    req: IRequestWithUser,
-  ) {
-    /*if (!bcrypt.compareSync(updateUserDto.password!, req.user.password))
-      throw new ConflictException();*/
-    const hashedPassword = {
+  updateSelf(updateUserDto: UpdateUserDto, @Req() req: IRequestWithUser) {
+    return this.userRepository.update(req.user.id, updateUserDto);
+  }
+
+  changeUserPassword(id: string, updateUserDto: UpdateUserDto) {
+    return this.userRepository.update(id, {
       password: bcrypt.hashSync(updateUserDto.password!, 10),
-    };
-    return this.userRepository.update(id, hashedPassword);
+    });
+  }
+
+  changeSelfPassword(
+    changeUserPasswordDto: ChangeUserPasswordDto,
+    @Req() req: IRequestWithUser,
+  ) {
+    if (
+      !bcrypt.compareSync(changeUserPasswordDto.oldPassword, req.user.password)
+    )
+      throw new ConflictException();
+    return this.userRepository.update(req.user.id, {
+      password: bcrypt.hashSync(changeUserPasswordDto.password!, 10),
+    });
   }
 
   remove(id: string) {
