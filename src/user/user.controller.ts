@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   Req,
+  Res,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -17,7 +18,8 @@ import { IRequestWithUser } from '../interfaces/Request.interface';
 import { Roles } from '../decorators/roles.decorator';
 import { UserRole } from '../enums/role.enum';
 import { RolesGuard } from '../guard/roles.guard';
-import { ChangeUserPasswordDto } from './dto/changePassword-user.dto';
+import { ChangeUserPasswordDto } from './dto/changePasswordSelf-user.dto';
+import { Response } from 'express';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('user')
@@ -45,6 +47,7 @@ export class UserController {
   @Patch(':id')
   @Roles(UserRole.ADMIN)
   updateUser(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    console.log('update user');
     return this.userService.updateUser(id, updateUserDto);
   }
 
@@ -56,26 +59,28 @@ export class UserController {
     return this.userService.updateSelf(updateUserDto, req);
   }
 
+  @Delete(':id')
+  @Roles(UserRole.ADMIN)
+  remove(@Param('id') id: string) {
+    return this.userService.remove(id);
+  }
+
   @Patch('password/:id')
   @Roles(UserRole.ADMIN)
   changeUserPassword(
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
   ) {
+    console.log('change user password');
     return this.userService.changeUserPassword(id, updateUserDto);
   }
 
-  @Patch('password')
+  @Patch('change/password')
   changeSelfPassword(
-    @Body() changeUserPasswordDto: ChangeUserPasswordDto,
     @Req() req: IRequestWithUser,
+    @Res() res: Response,
+    @Body() changeUserPasswordDto: ChangeUserPasswordDto,
   ) {
-    return this.userService.changeSelfPassword(changeUserPasswordDto, req);
-  }
-
-  @Delete(':id')
-  @Roles(UserRole.ADMIN)
-  remove(@Param('id') id: string) {
-    return this.userService.remove(id);
+    return this.userService.changeSelfPassword(changeUserPasswordDto, req, res);
   }
 }

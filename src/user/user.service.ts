@@ -1,13 +1,13 @@
-import { ConflictException, Injectable, Req } from '@nestjs/common';
+import { HttpStatus, Injectable, Req, Res} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Users } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import process from 'process';
 import { IRequestWithUser } from '../interfaces/Request.interface';
-import { ChangeUserPasswordDto } from './dto/changePassword-user.dto';
+import { ChangeUserPasswordDto } from './dto/changePasswordSelf-user.dto';
+import { Response } from 'express';
 
 @Injectable()
 export class UserService {
@@ -70,13 +70,19 @@ export class UserService {
   changeSelfPassword(
     changeUserPasswordDto: ChangeUserPasswordDto,
     @Req() req: IRequestWithUser,
+    @Res() res: Response,
   ) {
-    if (
-      !bcrypt.compareSync(changeUserPasswordDto.oldPassword, req.user.password)
-    )
-      throw new ConflictException();
+    this.userRepository
+      .findOne({
+        where: { id: req.user.id },
+      })
+      .then(({ password }: Users) => {
+        if (!bcrypt.compareSync(changeUserPasswordDto.oldPassword, password))
+          return res.status(HttpStatus.CONFLICT).json('Пароли не совпадают');
+      });
+    const newPassword = bcrypt.hashSync(changeUserPasswordDto.password!, 10);
     return this.userRepository.update(req.user.id, {
-      password: bcrypt.hashSync(changeUserPasswordDto.password!, 10),
+      password: newPassword,
     });
   }
 
