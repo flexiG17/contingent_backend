@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import { UserInterface } from '../user/interfaces/user.interface';
+import { UserInterface } from '../users/interfaces/user.interface';
 export interface IRequestWithUser extends Request {
   user: UserInterface;
 }
