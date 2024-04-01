@@ -1,6 +1,8 @@
 import {
-  Column, CreateDateColumn,
-  Entity, Generated,
+  Column,
+  CreateDateColumn,
+  Entity,
+  Generated,
   JoinColumn,
   ManyToOne,
   OneToOne,
@@ -28,54 +30,66 @@ export class Students {
 
   @OneToOne(() => Contacts, {
     cascade: true,
+    eager: true,
   })
   @JoinColumn()
   contact: Contacts;
 
-  @ManyToOne(() => Agents)
+  @ManyToOne(() => Agents, {
+    eager: true,
+  })
   agent: Agents;
 
-  @ManyToOne(() => Representatives)
+  @ManyToOne(() => Representatives, {
+    eager: true,
+  })
   representative: Representatives;
 
   @OneToOne(() => CurrentEducations, {
     cascade: true,
+    eager: true,
   })
   @JoinColumn()
   current_education: CurrentEducations;
 
   @OneToOne(() => InternationalInfos, {
     cascade: true,
+    eager: true,
   })
   @JoinColumn()
   international_info: InternationalInfos;
 
   @OneToOne(() => Passports, {
     cascade: true,
+    eager: true,
   })
   @JoinColumn()
   passport: Passports;
 
   @OneToOne(() => Enrollments, {
     cascade: true,
+    eager: true,
   })
   @JoinColumn()
   enrollment: Enrollments;
 
   @OneToOne(() => Payments, {
     cascade: true,
+    eager: true,
   })
   @JoinColumn()
   payment: Payments;
 
   @OneToOne(() => OldEducations, {
     cascade: true,
+    eager: true,
   })
   @JoinColumn()
   old_education: OldEducations;
 
   @OneToOne(() => Metadatas, {
     cascade: true,
+    eager: true,
   })
   @JoinColumn()
   metadata: Metadatas;

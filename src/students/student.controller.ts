@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   Req,
+  Query,
 } from '@nestjs/common';
 import { StudentService } from './student.service';
 import { CreateStudentDto } from './dto/create-student.dto';
@@ -17,6 +18,7 @@ import { RolesGuard } from '../guard/roles.guard';
 import { UserRole } from '../enums/role.enum';
 import { Roles } from '../decorators/roles.decorator';
 import { IRequestWithUser } from '../interfaces/Request.interface';
+import { PageOptionsDto } from '../utils/page/dtos';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('student')
@@ -33,8 +35,11 @@ export class StudentController {
   }
 
   @Get()
-  findAll() {
-    return this.studentService.findAll();
+  findAll(
+    @Req() res: IRequestWithUser,
+    @Query() pageOptionsDto: PageOptionsDto,
+  ) {
+    return this.studentService.findAll(res, pageOptionsDto);
   }
 
   @Get(':id')
