@@ -15,7 +15,7 @@ import { UpdatePassportDto } from './dto/update-passport.dto';
 export class PassportController {
   constructor(private readonly passportService: PassportService) {}
 
-  @Post()
+  /*@Post()
   create(@Body() createPassportDto: CreatePassportDto) {
     return this.passportService.create(createPassportDto);
   }
@@ -41,5 +41,5 @@ export class PassportController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.passportService.remove(+id);
-  }
+  }*/
 }

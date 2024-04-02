@@ -33,6 +33,7 @@ import { StudentPaymentModule } from './student-payments/student-payment.module'
 import { StudentPayments } from './student-payments/entities/student-payment.entity';
 import { Students } from './students/entities/student.entity';
 import { Contacts } from './contacts/entities/contact.entity';
+import { SystemSetupModule } from './system-setup/system-setup.module';
 
 @Module({
   imports: [
@@ -67,20 +68,21 @@ import { Contacts } from './contacts/entities/contact.entity';
     }),
     UserModule,
     AuthModule,
-    ContactsModule,
     StudentModule,
+    PassportModule,
+    SystemSetupModule,
+    /*ContactsModule,
     AgentModule,
     RepresentativeModule,
     CurrentEducationModule,
     EducationalProgramModule,
     InternationalInfoModule,
-    PassportModule,
     EnrollmentsModule,
     PaymentsModule,
     OldEducationModule,
     MetadataModule,
     TutorsModule,
-    StudentPaymentModule,
+    StudentPaymentModule,*/
   ],
 })
 export class AppModule {}

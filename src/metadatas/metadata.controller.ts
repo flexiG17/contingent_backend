@@ -15,9 +15,9 @@ import { UpdateMetadatumDto } from './dto/update-metadatum.dto';
 export class MetadataController {
   constructor(private readonly metadataService: MetadataService) {}
 
-  @Post()
-  create(@Body() createMetadatumDto: CreateMetadataDto) {
-    return this.metadataService.create(createMetadatumDto);
+  /*@Post()
+  create(@Body() createMetadataDto: CreateMetadataDto) {
+    return this.metadataService.create(createMetadataDto);
   }
 
   @Get()
@@ -41,5 +41,5 @@ export class MetadataController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.metadataService.remove(+id);
-  }
+  }*/
 }

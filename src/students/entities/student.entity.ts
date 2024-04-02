@@ -19,31 +19,40 @@ import { Payments } from '../../payments/entities/payment.entity';
 import { OldEducations } from '../../old-educations/entities/old-education.entity';
 import { Metadatas } from '../../metadatas/entities/metadata.entity';
 import { EducationalPrograms } from '../../educational-programs/entities/educational-program.entity';
+import { Tutors } from '../../tutors/entities/tutor.entity';
+import { agent } from 'supertest';
 
 @Entity()
 export class Students {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
-
-  @CreateDateColumn()
-  ordinal: Date;
+  id?: string;
 
   @OneToOne(() => Contacts, {
     cascade: true,
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
     eager: true,
   })
   @JoinColumn()
   contact: Contacts;
 
   @ManyToOne(() => Agents, {
+    cascade: true,
     eager: true,
   })
   agent: Agents;
 
   @ManyToOne(() => Representatives, {
+    cascade: true,
     eager: true,
   })
   representative: Representatives;
+
+  @ManyToOne(() => Tutors, {
+    cascade: true,
+    eager: true,
+  })
+  tutor: Tutors;
 
   @OneToOne(() => CurrentEducations, {
     cascade: true,
@@ -78,7 +87,7 @@ export class Students {
     eager: true,
   })
   @JoinColumn()
-  payment: Payments;
+  payment?: Payments;
 
   @OneToOne(() => OldEducations, {
     cascade: true,

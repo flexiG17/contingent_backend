@@ -17,7 +17,7 @@ export class InternationalInfoController {
     private readonly internationalInfoService: InternationalInfoService,
   ) {}
 
-  @Post()
+  /*@Post()
   create(@Body() createInternationalInfoDto: CreateInternationalInfoDto) {
     return this.internationalInfoService.create(createInternationalInfoDto);
   }
@@ -46,5 +46,5 @@ export class InternationalInfoController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.internationalInfoService.remove(+id);
-  }
+  }*/
 }

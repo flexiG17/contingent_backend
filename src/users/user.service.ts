@@ -45,7 +45,16 @@ export class UserService {
     });
   }
   findByEmail(email: string) {
-    return this.userRepository.findOneBy({ email });
+    return this.userRepository.findOne({
+      where: { email },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        password: true,
+      },
+    });
   }
 
   findOne(id: string) {

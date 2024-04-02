@@ -1,15 +1,15 @@
-export enum EnrollmentStatus {
+export enum EnrollmentStatusEnum {
   Enrolled = 'Зачислен',
   NotEnrolled = 'Не зачислен',
   Expelled = 'Отчислен',
 }
 
-export enum Enrollment1CStatus {
+export enum Enrollment1CStatusEnum {
   Pinned = 'Прикреплен',
   NotPinned = 'Не прикреплен',
 }
 
-export enum EnrollmentScholarshipStatus {
+export enum EnrollmentScholarshipStatusEnum {
   True = 'Да',
   False = 'Нет',
 }

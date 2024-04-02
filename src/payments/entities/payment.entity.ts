@@ -5,7 +5,7 @@ import { StudentPayments } from '../../student-payments/entities/student-payment
 @Entity()
 export class Payments {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id?: string;
 
   @Column({
     comment: 'Cумма для оплаты по договору',
@@ -24,6 +24,7 @@ export class Payments {
     (studentPayment) => studentPayment.payments,
     {
       cascade: true,
+      eager: true,
     },
   )
   student_payments: StudentPayments[];

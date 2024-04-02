@@ -21,7 +21,7 @@ import { UserRole } from '../enums/role.enum';
 export class AgentController {
   constructor(private readonly agentService: AgentService) {}
 
-  @Post()
+  /*@Post()
   @Roles(UserRole.EDITOR)
   create(@Body() createAgentDto: CreateAgentDto) {
     return this.agentService.create(createAgentDto);
@@ -47,5 +47,5 @@ export class AgentController {
   @Roles(UserRole.EDITOR)
   remove(@Param('id') id: string) {
     return this.agentService.remove(+id);
-  }
+  }*/
 }

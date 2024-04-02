@@ -8,7 +8,7 @@ import {
 @Entity()
 export class EducationalPrograms {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id?: string;
 
   @Column({
     type: 'enum',

@@ -9,10 +9,12 @@ import {
 @Entity()
 export class CurrentEducations {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id?: string;
 
-  @ManyToOne(() => EducationalPrograms)
-  educational_programs: EducationalPrograms;
+  @ManyToOne(() => EducationalPrograms, {
+    eager: true,
+  })
+  educational_program?: EducationalPrograms;
 
   @Column({
     type: 'enum',

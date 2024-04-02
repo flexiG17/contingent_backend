@@ -21,7 +21,7 @@ export class CurrentEducationController {
     private readonly currentEducationService: CurrentEducationService,
   ) {}
 
-  @Post()
+  /*@Post()
   create(@Body() createCurrentEducationDto: CreateCurrentEducationDto) {
     return this.currentEducationService.create(createCurrentEducationDto);
   }
@@ -47,5 +47,5 @@ export class CurrentEducationController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.currentEducationService.remove(+id);
-  }
+  }*/
 }

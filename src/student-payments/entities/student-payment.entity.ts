@@ -5,7 +5,7 @@ import { Payments } from '../../payments/entities/payment.entity';
 @Entity()
 export class StudentPayments {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id?: string;
 
   @Column({
     comment: 'Номер платежа',

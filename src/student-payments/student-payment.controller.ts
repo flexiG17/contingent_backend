@@ -15,7 +15,7 @@ import { UpdateStudentPaymentDto } from './dto/update-student-payment.dto';
 export class StudentPaymentController {
   constructor(private readonly studentPaymentService: StudentPaymentService) {}
 
-  @Post()
+  /*@Post()
   create(@Body() createStudentPaymentDto: CreateStudentPaymentDto) {
     return this.studentPaymentService.create(createStudentPaymentDto);
   }
@@ -41,5 +41,5 @@ export class StudentPaymentController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.studentPaymentService.remove(+id);
-  }
+  }*/
 }

@@ -4,4 +4,5 @@ export interface MetadataInterface {
   created_at: Date;
   updated_at: Date;
   createdById: string;
+  is_archived: boolean;
 }

@@ -1,6 +1,6 @@
 export interface ContactInterface {
   id: string;
-  phoneNumber: string;
-  firstEmail: string;
-  secondEmail: string;
+  phone_number: string;
+  first_email: string;
+  second_email: string;
 }

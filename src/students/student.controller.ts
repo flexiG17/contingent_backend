@@ -9,6 +9,7 @@ import {
   UseGuards,
   Req,
   Query,
+  Res,
 } from '@nestjs/common';
 import { StudentService } from './student.service';
 import { CreateStudentDto } from './dto/create-student.dto';
@@ -44,16 +45,35 @@ export class StudentController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.studentService.findOne(+id);
+    return this.studentService.findOne(id);
   }
 
+  @Roles(UserRole.EDITOR)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateStudentDto: UpdateStudentDto) {
-    return this.studentService.update(+id, updateStudentDto);
+    return this.studentService.update(id, updateStudentDto);
   }
 
+  @Roles(UserRole.EDITOR)
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.studentService.remove(+id);
+    return this.studentService.remove(id);
+  }
+
+  @Roles(UserRole.EDITOR)
+  @Patch('/archive/:id')
+  archive(@Param('id') id: string, @Body() updateStudentDto: UpdateStudentDto) {
+    return this.studentService.archive(id, updateStudentDto);
+  }
+
+  @Roles(UserRole.EDITOR)
+  @Post('/duplicate/:id')
+  duplicate(@Param('id') id: string, @Req() req: IRequestWithUser) {
+    return this.studentService.duplicate(id, req);
+  }
+  @Roles(UserRole.EDITOR)
+  @Post('/import')
+  import(@Req() req: IRequestWithUser) {
+    return this.studentService.import(req);
   }
 }

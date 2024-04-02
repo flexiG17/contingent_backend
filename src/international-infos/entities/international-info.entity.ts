@@ -4,7 +4,7 @@ import { RfLocationEnum } from '../../enums/international-info/rf-location.enum'
 @Entity()
 export class InternationalInfos {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id?: string;
 
   @Column({
     type: 'enum',

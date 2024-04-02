@@ -15,7 +15,7 @@ import { UpdateOldEducationDto } from './dto/update-old-education.dto';
 export class OldEducationController {
   constructor(private readonly oldEducationService: OldEducationService) {}
 
-  @Post()
+  /* @Post()
   create(@Body() createOldEducationDto: CreateOldEducationDto) {
     return this.oldEducationService.create(createOldEducationDto);
   }
@@ -41,5 +41,5 @@ export class OldEducationController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.oldEducationService.remove(+id);
-  }
+  }*/
 }

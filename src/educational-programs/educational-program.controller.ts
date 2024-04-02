@@ -21,7 +21,7 @@ export class EducationalProgramController {
     private readonly educationalProgramsService: EducationalProgramService,
   ) {}
 
-  @Post()
+  /*@Post()
   create(@Body() createEducationalProgramDto: CreateEducationalProgramDto) {
     return this.educationalProgramsService.create(createEducationalProgramDto);
   }
@@ -50,5 +50,5 @@ export class EducationalProgramController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.educationalProgramsService.remove(+id);
-  }
+  }*/
 }

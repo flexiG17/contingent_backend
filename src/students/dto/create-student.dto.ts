@@ -10,6 +10,7 @@ import { OldEducationInterface } from '../../old-educations/interfaces/old-educa
 import { MetadataInterface } from '../../metadatas/interfaces/metadata.interface';
 
 export class CreateStudentDto {
+  id?: string;
   contact: ContactInterface;
   representative: RepresentativeInterface;
   current_education: CurrentEducationInterface;

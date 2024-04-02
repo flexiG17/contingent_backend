@@ -11,7 +11,13 @@ import { Users } from '../../users/entities/user.entity';
 @Entity()
 export class Metadatas {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id?: string;
+
+  @Column({
+    comment: 'Студент архивирован',
+    default: false,
+  })
+  is_archived: boolean;
 
   @Column({
     comment: 'Примечания',

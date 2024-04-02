@@ -15,7 +15,7 @@ import { UpdateContactDto } from './dto/update-contact.dto';
 export class ContactsController {
   constructor(private readonly contactsService: ContactsService) {}
 
-  @Post()
+  /* @Post()
   create(@Body() createContactDto: CreateContactDto) {
     return this.contactsService.create(createContactDto);
   }
@@ -38,5 +38,5 @@ export class ContactsController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.contactsService.remove(+id);
-  }
+  }*/
 }

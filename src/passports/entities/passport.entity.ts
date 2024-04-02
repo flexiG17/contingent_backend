@@ -4,7 +4,7 @@ import { GenderEnum } from '../../enums/passport/gender.enum';
 @Entity()
 export class Passports {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id?: string;
 
   @Column({
     comment: 'Страна',

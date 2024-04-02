@@ -15,7 +15,7 @@ import { UpdateEnrollmentDto } from './dto/update-enrollment.dto';
 export class EnrollmentsController {
   constructor(private readonly enrollmentsService: EnrollmentsService) {}
 
-  @Post()
+  /*@Post()
   create(@Body() createEnrollmentDto: CreateEnrollmentDto) {
     return this.enrollmentsService.create(createEnrollmentDto);
   }
@@ -41,5 +41,5 @@ export class EnrollmentsController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.enrollmentsService.remove(+id);
-  }
+  }*/
 }

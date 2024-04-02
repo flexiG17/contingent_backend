@@ -19,7 +19,7 @@ import { RolesGuard } from '../guard/roles.guard';
 export class RepresentativeController {
   constructor(private readonly representativeService: RepresentativeService) {}
 
-  @Post()
+  /*@Post()
   create(@Body() createRepresentativeDto: CreateRepresentativeDto) {
     return this.representativeService.create(createRepresentativeDto);
   }
@@ -45,5 +45,5 @@ export class RepresentativeController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.representativeService.remove(+id);
-  }
+  }*/
 }

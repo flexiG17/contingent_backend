@@ -15,7 +15,7 @@ import { UpdateTutorDto } from './dto/update-tutor.dto';
 export class TutorsController {
   constructor(private readonly tutorsService: TutorsService) {}
 
-  @Post()
+  /*@Post()
   create(@Body() createTutorDto: CreateTutorDto) {
     return this.tutorsService.create(createTutorDto);
   }
@@ -38,5 +38,5 @@ export class TutorsController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.tutorsService.remove(+id);
-  }
+  }*/
 }

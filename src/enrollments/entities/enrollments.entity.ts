@@ -1,21 +1,21 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import {
-  Enrollment1CStatus,
-  EnrollmentScholarshipStatus,
-  EnrollmentStatus,
+  Enrollment1CStatusEnum,
+  EnrollmentScholarshipStatusEnum,
+  EnrollmentStatusEnum,
 } from '../../enums/enrollment/enrollment.enum';
 
 @Entity()
 export class Enrollments {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id?: string;
 
   @Column({
     type: 'enum',
-    enum: EnrollmentStatus,
+    enum: EnrollmentStatusEnum,
     comment: 'Статус зачисления',
   })
-  status: EnrollmentStatus;
+  status: EnrollmentStatusEnum;
 
   @Column({
     comment: 'Номер приказа о зачислении',
@@ -44,15 +44,15 @@ export class Enrollments {
 
   @Column({
     type: 'enum',
-    enum: Enrollment1CStatus,
+    enum: Enrollment1CStatusEnum,
     comment: 'Статус 1C',
   })
-  status_1c: Enrollment1CStatus;
+  status_1c: Enrollment1CStatusEnum;
 
   @Column({
     type: 'enum',
-    enum: EnrollmentScholarshipStatus,
+    enum: EnrollmentScholarshipStatusEnum,
     comment: 'Стипендия',
   })
-  scholarship: EnrollmentScholarshipStatus;
+  scholarship: EnrollmentScholarshipStatusEnum;
 }
