@@ -1,0 +1,316 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["distinct"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model agent {
+  id           String    @id @default(uuid())
+  name         String    @db.VarChar(255)
+  phone_number String    @db.VarChar(255)
+  first_email  String    @db.VarChar(255)
+  second_email String    @db.VarChar(255)
+  created_at   DateTime  @default(now()) @db.DateTime(6)
+  updated_at   DateTime  @updatedAt @db.DateTime(6)
+  student      student[]
+}
+
+model contact {
+  id           String   @id @default(uuid())
+  phone_number String   @db.VarChar(255)
+  first_email  String   @db.VarChar(255)
+  second_email String   @db.VarChar(255)
+  student_id   String   @unique()
+  student      student? @relation(fields: [student_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model current_education {
+  id                     String                             @id @default(uuid())
+  type                   current_education_type
+  form_study             current_education_form_study
+  started_learning       current_education_started_learning
+  date_started_learning  DateTime                           @db.DateTime(0)
+  desired_level          String                             @db.VarChar(255)
+  specialty_code         String                             @db.VarChar(255)
+  specialty_direction    String                             @db.VarChar(255)
+  education_field        String                             @db.VarChar(255)
+  organization           String                             @db.VarChar(255)
+  educational_program_id String?                            @db.VarChar(36)
+  educational_programs   educational_program?               @relation(fields: [educational_program_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  student_id             String                             @unique()
+  student                student?                           @relation(fields: [student_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([educational_program_id])
+}
+
+model educational_program {
+  id                 String                            @id @default(uuid())
+  hours_number       educational_program_hours_number
+  duration           educational_program_duration
+  academic_year      educational_program_academic_year
+  current_educations current_education[]
+}
+
+model enrollment {
+  id              String                 @id @default(uuid())
+  status          enrollment_status
+  order_number    String                 @db.VarChar(255)
+  enrollment_date DateTime               @db.DateTime(0)
+  expulsion_order String                 @db.VarChar(255)
+  expulsion_date  DateTime               @db.DateTime(0)
+  contract_number String                 @db.VarChar(255)
+  status_1c       enrollment_status_1c
+  scholarship     enrollment_scholarship
+  student_id      String                 @unique()
+  student         student?               @relation(fields: [student_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model international_info {
+  id                                String                         @id @default(uuid())
+  RF_location                       international_info_RF_location
+  residence_place                   String                         @db.VarChar(255)
+  entry_date                        DateTime                       @db.DateTime(0)
+  departure_date                    DateTime                       @db.DateTime(0)
+  estimated_receipt_date            DateTime                       @db.DateTime(0)
+  actual_receipt_date_invitation    DateTime                       @db.DateTime(0)
+  application_source                String                         @db.VarChar(255)
+  visa_validity                     DateTime                       @db.DateTime(0)
+  transfer_to_international_service DateTime                       @db.DateTime(0)
+  transfer_to_MVD                   DateTime                       @db.DateTime(0)
+  student_id                        String                         @unique()
+  student                           student?                       @relation(fields: [student_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model metadata {
+  id            String   @id @default(uuid())
+  is_archived   Boolean  @default(false)
+  comments      String   @db.VarChar(255)
+  created_at    DateTime @default(now()) @db.DateTime(6)
+  updated_at    DateTime @updatedAt @db.DateTime(6)
+  created_by_id String?  @db.VarChar(36)
+  user          user?    @relation(fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  student_id    String   @unique()
+  student       student? @relation(fields: [student_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([created_by_id])
+}
+
+model old_education {
+  id                               String   @id @default(uuid())
+  level_education                  String   @db.VarChar(255)
+  name_educational_institution     String   @db.VarChar(255)
+  location_educational_institution String   @db.VarChar(255)
+  graduation_year                  Int
+  direction_number                 String   @db.VarChar(255)
+  student_id                       String   @unique()
+  student                          student? @relation(fields: [student_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model passport {
+  id                  String          @id @default(uuid())
+  country             String          @db.VarChar(255)
+  gender              passport_gender
+  birth_place         String          @db.VarChar(255)
+  citizenship         String          @db.VarChar(255)
+  passport_number     String          @db.VarChar(255)
+  passport_expiration DateTime?       @db.DateTime(0)
+  passport_issued     String          @db.VarChar(255)
+  passport_issue_date DateTime?       @db.DateTime(0)
+  student_id          String          @unique()
+  student             student?        @relation(fields: [student_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model payment {
+  id              String                 @id @default(uuid())
+  contract_amount Int
+  payment_status  payment_payment_status
+  student_payment student_payment[]
+  student_id      String                 @unique()
+  student         student?               @relation(fields: [student_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model student_payment {
+  id         String               @id @default(uuid())
+  ordinal    Int
+  type       student_payment_type
+  date       DateTime             @db.DateTime(0)
+  amount     Int?
+  payment_id String?              @db.VarChar(36)
+  payment    payment?             @relation(fields: [payment_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([payment_id])
+}
+
+model representative {
+  id           String    @id @default(uuid())
+  name         String    @db.VarChar(255)
+  phone_number String    @db.VarChar(255)
+  first_email  String    @db.VarChar(255)
+  second_email String    @db.VarChar(255)
+  created_at   DateTime  @default(now()) @db.DateTime(6)
+  updated_at   DateTime  @updatedAt @db.DateTime(6)
+  student      student[]
+}
+
+model file {
+  id            String       @id @default(uuid())
+  name          String       @db.VarChar(255)
+  size          Int
+  path          String       @db.VarChar(255)
+  section       file_section @default(Default)
+  created_at    DateTime     @default(now()) @db.DateTime(6)
+  updated_at    DateTime     @updatedAt @db.DateTime(6)
+  created_by_id String?      @db.VarChar(36)
+  user          user?        @relation(fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  student_id    String?      @db.VarChar(36)
+  student       student?     @relation(fields: [student_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([student_id])
+}
+
+model student {
+  id                 String              @id @default(uuid())
+  latin_name         String              @db.VarChar(255)
+  russian_name       String              @db.VarChar(255)
+  contact            contact?
+  current_education  current_education?
+  international_info international_info?
+  enrollment         enrollment?
+  metadata           metadata?
+  old_education      old_education?
+  passport           passport?
+  payment            payment?
+  agent_id           String?             @db.VarChar(36)
+  agent              agent?              @relation(fields: [agent_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  representative_id  String?             @db.VarChar(36)
+  representative     representative?     @relation(fields: [representative_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  tutor_id           String?             @db.VarChar(36)
+  tutor              tutor?              @relation(fields: [tutor_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  file               file[]
+
+  @@index([tutor_id])
+  @@index([representative_id])
+  @@index([agent_id])
+}
+
+model tutor {
+  id         String    @id @default(uuid())
+  name       String    @db.VarChar(255)
+  created_at DateTime  @default(now()) @db.DateTime(6)
+  updated_at DateTime  @updatedAt @db.DateTime(6)
+  student    student[]
+}
+
+model user {
+  id            String     @id @default(uuid())
+  name          String     @db.VarChar(255)
+  email         String     @db.VarChar(255)
+  password      String     @db.VarChar(255)
+  role          user_role  @default(Viewer)
+  created_at    DateTime   @default(now()) @db.DateTime(6)
+  updated_at    DateTime   @updatedAt @db.DateTime(6)
+  created_by_id String?    @db.VarChar(36)
+  metadatas     metadata[]
+  user          user?      @relation("userTouser", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  other_user    user[]     @relation("userTouser")
+  file          file[]
+
+  @@index([created_by_id])
+}
+
+enum current_education_type {
+  Contract @map("Контракт")
+  Quota    @map("Квота")
+}
+
+enum educational_program_hours_number {
+  First   @map("1008")
+  Second  @map("868")
+  Third   @map("728")
+  Fourth  @map("588")
+  Fifth   @map("504")
+  Sixth   @map("352")
+  Seventh @map("288")
+  Eighth  @map("144")
+  Ninth   @map("108")
+  Tenth   @map("72")
+}
+
+enum enrollment_status {
+  Enrolled    @map("Зачислен")
+  NotEnrolled @map("Не зачислен")
+  Expelled    @map("Отчислен")
+}
+
+enum international_info_RF_location {
+  True  @map("Да")
+  False @map("Нет")
+}
+
+enum current_education_form_study {
+  Offline @map("Очная")
+  Online  @map("Онлайн")
+  Hybrid  @map("Гибрид")
+}
+
+enum educational_program_duration {
+  Full             @map("1.5 года")
+  Part             @map("1 год")
+  EMPTY_ENUM_VALUE @map("")
+}
+
+enum passport_gender {
+  Male   @map("Мужской")
+  Female @map("Женский")
+}
+
+enum payment_payment_status {
+  Paid          @map("Оплачено")
+  PartiallyPaid @map("Оплачено частино")
+  NotPaid       @map("Не оплачено")
+}
+
+enum student_payment_type {
+  Contract @map("Договор")
+  Actual   @map("Фактический")
+}
+
+enum current_education_started_learning {
+  True  @map("Да")
+  False @map("Нет")
+}
+
+enum educational_program_academic_year {
+  TwentyThree @map("23-24 г.")
+  TwentyFour  @map("24-25 г.")
+  TwentyFive  @map("25-26 г.")
+  TwentySix   @map("26-27 г.")
+}
+
+enum user_role {
+  Admin  @map("Администратор")
+  Editor @map("Редактор")
+  Viewer @map("Читатель")
+}
+
+enum file_section {
+  Passport
+  Visa
+  Payment
+  Housing
+  Default
+}
+
+enum enrollment_status_1c {
+  Pinned    @map("Прикреплен")
+  NotPinned @map("Не прикреплен")
+}
+
+enum enrollment_scholarship {
+  True  @map("Да")
+  False @map("Нет")
+}
