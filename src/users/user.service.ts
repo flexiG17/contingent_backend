@@ -1,83 +1,121 @@
-import {
-  ConflictException,
-  HttpStatus,
-  Injectable,
-  Req,
-  Res,
-} from '@nestjs/common';
+import { HttpStatus, Injectable, Req, Res } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Users } from './entities/user.entity';
-import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { IRequestWithUser } from '../interfaces/Request.interface';
 import { ChangeUserPasswordDto } from './dto/change-password-self-user.dto';
 import { Response } from 'express';
+import { PrismaService } from '../prisma.service';
+import { PageDto, PageMetaDto, PageOptionsDto } from '../utils/page/dtos';
+import { user } from '@prisma/client';
 
 @Injectable()
 export class UserService {
-  private readonly dataToDisplay = {
-    id: true,
-    name: true,
-    email: true,
-    role: true,
-    created_at: true,
-    updated_at: true,
-    created_by: true,
-  };
-  constructor(
-    @InjectRepository(Users)
-    private readonly userRepository: Repository<Users>,
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
   create(createUserDto: CreateUserDto, req: IRequestWithUser) {
     const inputData = { ...createUserDto };
     inputData.password = bcrypt.hashSync(createUserDto.password, 10);
-    inputData.created_by = req.user.id;
-    return this.userRepository.save(inputData);
-  }
+    inputData.created_by_id = req.user.id;
 
-  findAll() {
-    return this.userRepository.find({
-      relations: ['created_by'],
-      select: this.dataToDisplay,
+    return this.prisma.user.create({
+      data: inputData,
+      include: {
+        user: true,
+      },
     });
   }
-  findByEmail(email: string) {
-    return this.userRepository.findOne({
-      where: { email },
+
+  async findAll(pageOptionsDto: PageOptionsDto) {
+    const columnsCount = await this.prisma.user.count();
+
+    const users = await this.prisma.user.findMany({
       select: {
         id: true,
         name: true,
         email: true,
         role: true,
-        password: true,
+        created_at: true,
+        updated_at: true,
+        user: {
+          include: {
+            user: true,
+          },
+        },
       },
+      skip: pageOptionsDto.skip,
+      take: pageOptionsDto.take,
+      orderBy: {
+        created_at: pageOptionsDto.order,
+      },
+    });
+
+    const itemCount = columnsCount;
+    const entities = users;
+
+    const pageMetaDto = new PageMetaDto({ itemCount, pageOptionsDto });
+
+    return new PageDto(entities, pageMetaDto);
+  }
+
+  findByEmail(email: string) {
+    return this.prisma.user.findFirst({
+      where: { email },
     });
   }
 
   findOne(id: string) {
-    return this.userRepository.findOne({
+    return this.prisma.user.findFirst({
       where: { id },
-      relations: ['created_by'],
-      select: this.dataToDisplay,
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        created_at: true,
+        updated_at: true,
+        user: {
+          include: {
+            user: true,
+          },
+        },
+      },
     });
   }
 
   updateUser(id: string, updateUserDto: UpdateUserDto) {
-    return this.userRepository.update(id, {
-      ...updateUserDto,
+    return this.prisma.user.update({
+      where: { id },
+      data: updateUserDto,
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        created_at: true,
+        updated_at: true,
+        user: {
+          include: {
+            user: true,
+          },
+        },
+      },
     });
   }
 
   updateSelf(updateUserDto: UpdateUserDto, @Req() req: IRequestWithUser) {
-    return this.userRepository.update(req.user.id, updateUserDto);
+    return this.prisma.user.update({
+      where: { id: req.user.id },
+      data: updateUserDto,
+    });
   }
 
   changeUserPassword(id: string, updateUserDto: UpdateUserDto) {
-    return this.userRepository.update(id, {
-      password: bcrypt.hashSync(updateUserDto.password!, 10),
+    return this.prisma.user.update({
+      where: { id },
+      data: {
+        password: bcrypt.hashSync(updateUserDto.password!, 10),
+      },
     });
   }
 
@@ -86,21 +124,32 @@ export class UserService {
     @Req() req: IRequestWithUser,
     @Res() res: Response,
   ) {
-    this.userRepository
-      .findOne({
+    this.prisma.user
+      .findFirst({
         where: { id: req.user.id },
       })
-      .then(({ password }: Users) => {
-        if (!bcrypt.compareSync(changeUserPasswordDto.oldPassword, password)) {
+      .then((user: user) => {
+        if (
+          !bcrypt.compareSync(changeUserPasswordDto.oldPassword, user!.password)
+        ) {
           return res.status(HttpStatus.CONFLICT).json('Пароли не совпадают');
         }
       });
-    return this.userRepository.update(req.user.id, {
-      password: bcrypt.hashSync(changeUserPasswordDto.password!, 10),
-    });
+    return this.prisma.user
+      .update({
+        where: { id: req.user.id },
+        data: {
+          password: bcrypt.hashSync(changeUserPasswordDto.password!, 10),
+        },
+      })
+      .then(() => {
+        return res.status(HttpStatus.OK).json('Пароль успешно изменён');
+      });
   }
 
   remove(id: string) {
-    return this.userRepository.delete(id);
+    return this.prisma.user.delete({
+      where: { id },
+    });
   }
 }

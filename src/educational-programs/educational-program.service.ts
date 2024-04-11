@@ -1,16 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { CreateEducationalProgramDto } from './dto/create-educational-program.dto';
 import { UpdateEducationalProgramDto } from './dto/update-educational-program.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { EducationalPrograms } from './entities/educational-program.entity';
-import { Repository } from 'typeorm';
 
 @Injectable()
 export class EducationalProgramService {
-  constructor(
-    @InjectRepository(EducationalPrograms)
-    private readonly educationalProgramsRepository = Repository<EducationalPrograms>,
-  ) {}
+  constructor() {}
   create(createEducationalProgramDto: CreateEducationalProgramDto) {
     return 'This action adds a new educationalProgram';
   }

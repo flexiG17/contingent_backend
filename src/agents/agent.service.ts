@@ -1,16 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { CreateAgentDto } from './dto/create-agent.dto';
 import { UpdateAgentDto } from './dto/update-agent.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Agents } from './entities/agent.entity';
-import { Repository } from 'typeorm';
 
 @Injectable()
 export class AgentService {
-  constructor(
-    @InjectRepository(Agents)
-    private readonly agentRepository: Repository<Agents>,
-  ) {}
+  constructor() {}
   create(createAgentDto: CreateAgentDto) {
     return 'This action adds a new agents';
   }

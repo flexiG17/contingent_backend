@@ -1,7 +1,8 @@
-import { PaymentStatusEnum } from '../../enums/payment/payment-status.enum';
+import { payment_payment_status, student_payment } from '@prisma/client';
 
 export interface PaymentInterface {
-  id: string;
+  id?: string;
   contract_amount: number;
-  payment_status: PaymentStatusEnum;
+  payment_status: payment_payment_status;
+  student_payments: student_payment[];
 }

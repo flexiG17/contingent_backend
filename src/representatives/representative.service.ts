@@ -2,15 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { CreateRepresentativeDto } from './dto/create-representative.dto';
 import { UpdateRepresentativeDto } from './dto/update-representative.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Representatives } from './entities/representative.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
 export class RepresentativeService {
-  constructor(
-    @InjectRepository(Representatives)
-    private readonly representativeRepository: Repository<Representatives>,
-  ) {}
+  constructor() {}
   create(createRepresentativeDto: CreateRepresentativeDto) {
     return 'This action adds a new representatives';
   }

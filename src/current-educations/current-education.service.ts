@@ -2,15 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { CreateCurrentEducationDto } from './dto/create-current-education.dto';
 import { UpdateCurrentEducationDto } from './dto/update-current-education.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CurrentEducations } from './entities/current-education.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
 export class CurrentEducationService {
-  constructor(
-    @InjectRepository(CurrentEducations)
-    private readonly currentEducationRepository: Repository<CurrentEducations>,
-  ) {}
+  constructor() {}
   create(createCurrentEducationDto: CreateCurrentEducationDto) {
     return 'This action adds a new current-educations';
   }

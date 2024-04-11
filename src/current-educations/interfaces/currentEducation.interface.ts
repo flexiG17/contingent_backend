@@ -1,22 +1,20 @@
 import {
-  EducationTypeEnum,
-  FormStudyEnum,
-  StartedLearningEnum,
-} from '../../enums/current-education/current-education.enum';
-import { EducationProgramInterface } from '../../educational-programs/interfaces/educationProgram.interface';
+  current_education_form_study,
+  current_education_started_learning,
+  current_education_type,
+} from '@prisma/client';
 
 export interface CurrentEducationInterface {
-  id: string;
-  educationalProgramsId: string;
-  type: EducationTypeEnum;
-  form_study: FormStudyEnum;
-  started_learning: StartedLearningEnum;
+  id?: string;
+  educational_program_id: string;
+  type: current_education_type;
+  form_study: current_education_form_study;
+  started_learning: current_education_started_learning;
   date_started_learning: Date;
   desired_level: string;
   specialty_code: string;
   specialty_direction: string;
   education_field: string;
   organization: string;
-
-  program: EducationProgramInterface;
+  student_id?: string;
 }

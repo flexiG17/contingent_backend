@@ -12,9 +12,4 @@ export class AuthController {
   async login(@Req() req: IRequestWithUser) {
     return this.authService.login(req.user);
   }
-  @UseGuards(JwtAuthGuard)
-  @Get('profile')
-  getProfile(@Req() req: IRequestWithUser) {
-    return req.user;
-  }
 }

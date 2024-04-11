@@ -1,16 +1,22 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Students } from '../students/entities/student.entity';
-import { Repository } from 'typeorm';
+import { PrismaService } from '../prisma.service';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class SystemSetupService {
-  constructor(
-    @InjectRepository(Students)
-    private readonly systemSetupRepository: Repository<Students>,
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
-  findColumns() {
-    return 'haha';
+  // указать типы поподробнее
+  findColumns(res: { table: Prisma.ModelName; column: string }) {
+    const query = this.prisma[res.table] as any;
+    return query
+      .findMany({
+        distinct: [res.column],
+      })
+      .then((response: any) => {
+        return response.map((field: any) => {
+          return field[res.column];
+        });
+      });
   }
 }

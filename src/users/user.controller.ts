@@ -9,6 +9,7 @@ import {
   UseGuards,
   Req,
   Res,
+  Query,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -20,6 +21,7 @@ import { UserRole } from '../enums/role.enum';
 import { RolesGuard } from '../guard/roles.guard';
 import { ChangeUserPasswordDto } from './dto/change-password-self-user.dto';
 import { Response } from 'express';
+import { PageOptionsDto } from '../utils/page/dtos';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('user')
@@ -34,8 +36,8 @@ export class UserController {
 
   @Get('')
   @Roles(UserRole.ADMIN)
-  findAll() {
-    return this.userService.findAll();
+  findAll(@Query() pageOptionsDto: PageOptionsDto) {
+    return this.userService.findAll(pageOptionsDto);
   }
 
   @Get(':id')

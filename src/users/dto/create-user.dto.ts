@@ -1,12 +1,12 @@
-import { UserRole } from '../../enums/role.enum';
+import { user_role } from '@prisma/client';
 
 export class CreateUserDto {
   id: string;
   name: string;
-  mail: string;
+  email: string;
   password: string;
-  role: UserRole;
+  role: user_role;
   created_at: Date;
   updated_at: Date;
-  created_by: string;
+  created_by_id: string;
 }
