@@ -1,4 +1,10 @@
-import { HttpStatus, Injectable, Req, Res } from '@nestjs/common';
+import {
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+  Req,
+  Res,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcrypt';
@@ -8,9 +14,12 @@ import { Response } from 'express';
 import { PrismaService } from '../prisma.service';
 import { PageDto, PageMetaDto, PageOptionsDto } from '../utils/page/dtos';
 import { user } from '@prisma/client';
+import { User } from './entities/user.entity';
 
 @Injectable()
 export class UserService {
+  private readonly users: User[] = [];
+
   constructor(private prisma: PrismaService) {}
 
   create(createUserDto: CreateUserDto, req: IRequestWithUser) {
@@ -53,15 +62,25 @@ export class UserService {
     const itemCount = columnsCount;
     const entities = users;
 
-    const pageMetaDto = new PageMetaDto({ itemCount, pageOptionsDto });
+    const pageMetaDto = new PageMetaDto({
+      itemCount,
+      pageOptionsDto,
+    });
 
     return new PageDto(entities, pageMetaDto);
   }
 
   findByEmail(email: string) {
-    return this.prisma.user.findFirst({
+    const user = this.prisma.user.findFirst({
       where: { email },
     });
+
+    if (!user) {
+      throw new NotFoundException({
+        message: 'User with the given email not found',
+      });
+    }
+    return user;
   }
 
   findOne(id: string) {
@@ -110,11 +129,11 @@ export class UserService {
     });
   }
 
-  changeUserPassword(id: string, updateUserDto: UpdateUserDto) {
+  changeUserPassword(id: string, changeUserPasswordDto: ChangeUserPasswordDto) {
     return this.prisma.user.update({
       where: { id },
       data: {
-        password: bcrypt.hashSync(updateUserDto.password!, 10),
+        password: bcrypt.hashSync(changeUserPasswordDto.password!, 10),
       },
     });
   }

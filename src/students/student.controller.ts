@@ -7,12 +7,13 @@ import {
   Patch,
   Post,
   Query,
-  Req, Res,
+  Req,
+  Res,
   UploadedFile,
   UploadedFiles,
   UseGuards,
-  UseInterceptors
-} from "@nestjs/common";
+  UseInterceptors,
+} from '@nestjs/common';
 import { StudentService } from './student.service';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -20,7 +21,7 @@ import { RolesGuard } from '../guard/roles.guard';
 import { UserRole } from '../enums/role.enum';
 import { Roles } from '../decorators/roles.decorator';
 import { IRequestWithUser } from '../interfaces/Request.interface';
-import { PageOptionsDto } from '../utils/page/dtos';
+import { PageDto, PageMetaDto, PageOptionsDto } from '../utils/page/dtos';
 import {
   FileFieldsInterceptor,
   FileInterceptor,
@@ -28,11 +29,13 @@ import {
 } from '@nestjs/platform-express';
 import { UploadFilesType } from '../file/types/upload-files.type';
 import { UploadFilesConst } from '../file/consts/upload-files.const';
-import { Response } from 'express'
-import { myStorage } from "../utils/multer-config.util";
+import { Response } from 'express';
+import { myStorage } from '../utils/multer-config.util';
+import { ApiConsumes, ApiExtraModels, ApiTags } from '@nestjs/swagger';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller(['student'])
+@ApiTags('student')
 export class StudentController {
   constructor(private readonly studentService: StudentService) {}
 
@@ -42,6 +45,7 @@ export class StudentController {
       storage: myStorage,
     }),
   )
+  @ApiConsumes('multipart/form-data')
   @Post()
   create(
     @Body() createStudentDto: CreateStudentDto,

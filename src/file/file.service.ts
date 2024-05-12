@@ -1,19 +1,20 @@
-import { Injectable } from "@nestjs/common";
-import * as fs from "fs";
-import { ConfigService } from "@nestjs/config";
-import { file_section, Prisma } from "@prisma/client";
-import { UploadFilesType } from "./types/upload-files.type";
-import { PrismaService } from "../prisma.service";
-import { Response } from "express";
+import { Injectable } from '@nestjs/common';
+import * as fs from 'fs';
+import { ConfigService } from '@nestjs/config';
+import { file_section, Prisma } from '@prisma/client';
+import { UploadFilesType } from './types/upload-files.type';
+import { PrismaService } from '../prisma.service';
+import { Response } from 'express';
 
 @Injectable()
 export class FileService {
-  private readonly filesPath?: string = "";
+  private readonly filesPath?: string = '';
 
   constructor(
     private configService: ConfigService,
-    private prisma: PrismaService) {
-    this.filesPath = configService.get<string>("UPLOAD_PATH");
+    private prisma: PrismaService,
+  ) {
+    this.filesPath = configService.get<string>('UPLOAD_PATH');
   }
 
   private GetRootStudentPath = (id: string) => {
@@ -28,14 +29,14 @@ export class FileService {
     struct.map((section) => {
       fs.mkdirSync(`${rootStudentPath}/${section}`);
     });
-    return "This action adds a student struct";
+    return 'This action adds a student struct';
   }
 
   upload(
     student_id: string,
     student_name: string,
     files: UploadFilesType,
-    user_id: string
+    user_id: string,
   ): Prisma.fileCreateManyInput[] {
     const rootStudentPath = this.GetRootStudentPath(student_id);
     const result: Prisma.fileCreateManyInput[] = [];
@@ -68,22 +69,19 @@ export class FileService {
 
   savePath(filesArray: Prisma.fileCreateManyInput[]) {
     return this.prisma.file.createMany({
-      data: filesArray
+      data: filesArray,
     });
   }
 
   async download(id: string, res: Response) {
-    const inputFile = await this.prisma.file
-      .findFirst({
-        where: { id }
-      });
+    const inputFile = await this.prisma.file.findFirst({
+      where: { id },
+    });
     /*const file = createReadStream(join(process.cwd(), inputFile!.path));
     file.pipe(res);
     return res.status(200);*/
-    res.download(inputFile!.path)
+    res.download(inputFile!.path);
   }
 
-  uploadOne() {
-
-  }
+  uploadOne() {}
 }

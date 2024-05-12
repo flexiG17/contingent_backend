@@ -1,46 +1,34 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
 import { UserRole } from '../../enums/role.enum';
+import { ApiProperty } from '@nestjs/swagger';
 
-@Entity({
-  name: 'user',
-})
-export class Users {
-  @PrimaryGeneratedColumn('uuid')
+export class User {
+  @ApiProperty({ example: '', description: 'uuid id' })
   id: string;
 
-  @Column()
+  @ApiProperty({ example: 'Pavel Durov', description: 'user name' })
   name: string;
 
-  @Column()
+  @ApiProperty({ example: 'pavel.durev@gmail.com', description: 'user email' })
   email: string;
 
-  @Column({
-    select: false,
-  })
+  @ApiProperty({ example: '11111111', description: 'user password' })
   password: string;
 
-  @Column({
-    type: 'enum',
-    enum: UserRole,
-    default: UserRole.VIEWER,
-  })
+  @ApiProperty({ example: 'Admin', description: 'user role' })
   role: UserRole;
 
-  @CreateDateColumn()
+  @ApiProperty({
+    example: '2024-04-04T19:10:28.000Z',
+    description: 'user created at',
+  })
   created_at: Date;
 
-  @UpdateDateColumn()
+  @ApiProperty({
+    example: '2024-04-04T19:10:28.000Z',
+    description: 'user update at',
+  })
   updated_at: Date;
 
-  @ManyToOne(() => Users)
-  @JoinColumn({ referencedColumnName: 'id' })
-  created_by: string;
+  @ApiProperty({ example: User, description: 'user created by' })
+  user: User;
 }

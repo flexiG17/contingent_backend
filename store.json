@@ -1,0 +1,87 @@
+{
+  "store": {
+    "user": {
+      "id": "253abf81-f28d-11ee-bebb-50ebf6992398",
+      "name": "Админ",
+      "email": "admin@mail.ru",
+      "role": "Admin",
+      "created_at": "2024-04-04T19:10:28.000Z",
+      "updated_at": "2024-04-09T05:48:21.248Z"
+    },
+    "student": {
+      "id": "28b12371-f075-4e5d-83a3-a19996689803",
+      "latin_name": "",
+      "agent_id": "1eb80d4d-f638-11ee-ae20-50ebf6992398",
+      "contact": {
+        "id": "0666bf0d-447e-4ca9-9958-ff42d2e5fa83",
+        "phone_number": "12345",
+        "first_email": "1mail@a.ru"
+      },
+      "current_education": {
+        "id": "e3b3d311-1b92-44ee-b692-57b199478a99",
+        "form_study": "Offline",
+        "educational_programs": {
+          "id": "5ac78e17-f638-11ee-ae20-50ebf6992398",
+          "hours_number": "First",
+          "duration": "Full",
+          "academic_year": "TwentyThree"
+        }
+      },
+      "international_info": {
+        "id": "b08e6713-0ae1-4c5f-8eb3-87c47e8bff27",
+        "RF_location": "True",
+        "entry_date": "2022-09-07T00:00:00.000Z"
+      },
+      "enrollment": {
+        "id": "48c5e8d7-d37d-4dc2-9b94-c0890c21259d",
+        "status": "Enrolled",
+        "order_number": "123512356"
+      },
+      "metadata": {
+        "id": "8a4dd906-6dc4-49a5-9685-b72ae139e934",
+        "is_archived": false,
+        "comments": "Какие могут быть комментарии!!!",
+        "created_at": "2024-04-09T06:14:05.682Z",
+        "updated_at": "2024-04-09T06:14:05.682Z",
+        "created_by_id": "253abf81-f28d-11ee-bebb-50ebf6992398",
+        "student_id": "28b12371-f075-4e5d-83a3-a19996689803",
+        "user": {
+          "id": "253abf81-f28d-11ee-bebb-50ebf6992398",
+          "name": "Админ",
+          "email": "admin@mail.ru",
+          "role": "Admin",
+          "created_at": "2024-04-04T19:10:28.000Z",
+          "updated_at": "2024-04-09T05:48:21.248Z"
+        }
+      },
+      "old_education": {
+        "id": "15cd9685-2654-4897-b29f-890a329e3920",
+        "level_education": "Высшее",
+        "name_educational_institution": "1",
+        "location_educational_institution": "2",
+        "graduation_year": 3,
+        "direction_number": "4",
+        "student_id": "28b12371-f075-4e5d-83a3-a19996689803"
+      },
+      "passport": {
+        "id": "58ab9459-9500-4809-9425-ad780bbd2f25",
+        "country": "Russia",
+        "gender": "Male",
+        "birth_place": "Екб!",
+        "citizenship": "Tumen",
+        "passport_number": "12345",
+        "passport_expiration": "2024-03-31T00:00:00.000Z",
+        "passport_issued": "i3123",
+        "passport_issue_date": "2024-03-31T00:00:00.000Z",
+        "student_id": "28b12371-f075-4e5d-83a3-a19996689803"
+      },
+      "payment": {
+        "id": "f6ca4eb2-b319-4355-9e1d-a0c31b80fc7a",
+        "contract_amount": 140000,
+        "payment_status": "PartiallyPaid",
+        "student_id": "28b12371-f075-4e5d-83a3-a19996689803",
+        "student_payment": []
+      }
+    }
+  }
+}
