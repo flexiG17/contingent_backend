@@ -2,6 +2,8 @@ import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { UserRole } from '../enums/role.enum';
 import { ROLES_KEY } from '../decorators/roles.decorator';
+import { GetEnumLatinKeyByValue } from "../utils/get-enum-latin-key";
+import { user_role } from "@prisma/client";
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -18,7 +20,7 @@ export class RolesGuard implements CanActivate {
     const { user } = context.switchToHttp().getRequest();
     return (
       requiredRoles.some((role) => user.role?.includes(role)) ||
-      user.role?.includes(UserRole.ADMIN)
+      user.role?.includes(GetEnumLatinKeyByValue(user_role, user_role.Admin))
     );
   }
 }

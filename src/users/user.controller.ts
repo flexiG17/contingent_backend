@@ -41,7 +41,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post('')
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.Admin)
   @ApiOperation({ summary: 'create new user (only for Admin)' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Success', type: User })
   create(@Body() createUserDto: CreateUserDto, @Req() req: IRequestWithUser) {
@@ -49,7 +49,7 @@ export class UserController {
   }
 
   @Get('')
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.Admin)
   @ApiOperation({ summary: 'find all users with pagination' })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -61,7 +61,7 @@ export class UserController {
   }
 
   @Get(':id')
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.Admin)
   @ApiOperation({ summary: 'get single user' })
   @ApiParam({ name: 'id', required: true, description: 'user identifier' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Success', type: User })
@@ -70,7 +70,7 @@ export class UserController {
   }
 
   @Patch(':id')
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.Admin)
   @ApiOperation({ summary: 'update user by id' })
   @ApiParam({ name: 'id', required: true, description: 'user identifier' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Success', type: User })
@@ -89,7 +89,7 @@ export class UserController {
   }
 
   @Delete(':id')
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.Admin)
   @ApiOperation({ summary: 'remove user by id' })
   @ApiParam({ name: 'id', required: true, description: 'user identifier' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Success' })
@@ -98,7 +98,7 @@ export class UserController {
   }
 
   @Patch('password/:id')
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.Admin)
   @ApiOperation({ summary: 'change user password (only for admin)' })
   @ApiParam({ name: 'id', required: true, description: 'user identifier' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Success' })
