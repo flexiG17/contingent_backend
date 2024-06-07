@@ -1,18 +1,18 @@
-import { UserService } from "./user.service";
-import { Test, TestingModule } from "@nestjs/testing";
-import { NotFoundException } from "@nestjs/common";
-import { PageOptionsDto } from "../utils/page/dtos";
-import { PrismaService } from "../prisma.service";
+import { UserService } from './user.service';
+import { Test, TestingModule } from '@nestjs/testing';
+import { NotFoundException } from '@nestjs/common';
+import { PageOptionsDto } from '../utils/page/dtos';
+import { PrismaService } from '../prisma.service';
 
 const prismaMock = {
   user: {
     findFirst: jest.fn(),
     findMany: jest.fn(),
-    count: jest.fn()
-  }
+    count: jest.fn(),
+  },
 };
 
-describe("UserService", () => {
+describe('UserService', () => {
   let userService: UserService;
 
   beforeEach(async () => {
@@ -21,9 +21,9 @@ describe("UserService", () => {
         UserService,
         {
           provide: PrismaService,
-          useValue: prismaMock
-        }
-      ]
+          useValue: prismaMock,
+        },
+      ],
     }).compile();
 
     userService = module.get<UserService>(UserService);
@@ -33,56 +33,56 @@ describe("UserService", () => {
     prismaMock.user.count.mockClear();
   });
 
-  describe("findByEmail", () => {
+  describe('findByEmail', () => {
     const existingUser = {
-      name: "existing-user",
-      email: "admin@mail.ru"
+      name: 'existing-user',
+      email: 'admin@mail.ru',
     };
 
-    it("should return user if exists", async () => {
+    it('should return user if exists', async () => {
       prismaMock.user.findFirst.mockResolvedValue(existingUser);
 
       const result = await userService.findByEmail(existingUser.email);
       expect(result).toEqual(existingUser);
       expect(prismaMock.user.findFirst).toBeCalledTimes(1);
       expect(prismaMock.user.findFirst).toBeCalledWith({
-        where: { email: existingUser.email }
+        where: { email: existingUser.email },
       });
     });
 
-    it("should throw NotFoundException if user not exists", async () => {
+    it('should throw NotFoundException if user not exists', async () => {
       prismaMock.user.findFirst.mockResolvedValue(null);
 
       await expect(
-        userService.findByEmail("non-existing-user-email@email.com")
+        userService.findByEmail('non-existing-user-email@email.com'),
       ).rejects.toThrow(NotFoundException);
       expect(prismaMock.user.findFirst).toBeCalledTimes(1);
       expect(prismaMock.user.findFirst).toBeCalledWith({
-        where: { email: "non-existing-user-email@email.com" }
+        where: { email: 'non-existing-user-email@email.com' },
       });
     });
   });
 
-  describe("findAll", () => {
-    it("should return all user", async () => {
+  describe('findAll', () => {
+    it('should return all user', async () => {
       const allUser = {
         data: [
           {
-            id: "id1",
-            name: "User 1",
-            email: "User 1",
-            role: "User 1",
-            created_at: "User 1",
-            updated_at: "User 1"
+            id: 'id1',
+            name: 'User 1',
+            email: 'User 1',
+            role: 'User 1',
+            created_at: 'User 1',
+            updated_at: 'User 1',
           },
           {
-            id: "id1",
-            name: "User 1",
-            email: "User 1",
-            role: "User 1",
-            created_at: "User 1",
-            updated_at: "User 1"
-          }
+            id: 'id1',
+            name: 'User 1',
+            email: 'User 1',
+            role: 'User 1',
+            created_at: 'User 1',
+            updated_at: 'User 1',
+          },
         ],
         meta: {
           hasNextPage: false,
@@ -90,8 +90,8 @@ describe("UserService", () => {
           itemCount: undefined,
           page: 1,
           pageCount: 1,
-          take: 10
-        }
+          take: 10,
+        },
       };
 
       prismaMock.user.findMany.mockResolvedValue(allUser);
@@ -102,7 +102,7 @@ describe("UserService", () => {
       expect(prismaMock.user.findMany).toBeCalledWith({});
     });
 
-    it("should return empty array if there are no users", async () => {
+    it('should return empty array if there are no users', async () => {
       prismaMock.user.findMany.mockResolvedValue([]);
 
       const result = await userService.findAll(new PageOptionsDto());
