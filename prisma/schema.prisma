@@ -13,7 +13,7 @@ model agent {
   name         String    @db.VarChar(255)
   phone_number String    @db.VarChar(255)
   first_email  String    @db.VarChar(255)
-  second_email String    @db.VarChar(255)
+  second_email String?   @db.VarChar(255)
   created_at   DateTime  @default(now()) @db.DateTime(6)
   updated_at   DateTime  @updatedAt @db.DateTime(6)
   student      student[]
@@ -21,28 +21,28 @@ model agent {
 
 model contact {
   id           String   @id @default(uuid())
-  phone_number String   @db.VarChar(255)
-  first_email  String   @db.VarChar(255)
-  second_email String   @db.VarChar(255)
-  student_id   String   @unique()
+  phone_number String?  @db.VarChar(255)
+  first_email  String?  @db.VarChar(255)
+  second_email String?  @db.VarChar(255)
+  student_id   String?  @unique()
   student      student? @relation(fields: [student_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model current_education {
-  id                     String                             @id @default(uuid())
+  id                     String                              @id @default(uuid())
   type                   current_education_type
-  form_study             current_education_form_study
-  started_learning       current_education_started_learning
-  date_started_learning  DateTime                           @db.DateTime(0)
-  desired_level          String                             @db.VarChar(255)
-  specialty_code         String                             @db.VarChar(255)
-  specialty_direction    String                             @db.VarChar(255)
-  education_field        String                             @db.VarChar(255)
-  organization           String                             @db.VarChar(255)
-  educational_program_id String?                            @db.VarChar(36)
-  educational_programs   educational_program?               @relation(fields: [educational_program_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  student_id             String                             @unique()
-  student                student?                           @relation(fields: [student_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  form_study             current_education_form_study?
+  started_learning       current_education_started_learning?
+  date_started_learning  DateTime?                           @db.DateTime(0)
+  desired_level          String?                             @db.VarChar(255)
+  specialty_code         String?                             @db.VarChar(255)
+  specialty_direction    String?                             @db.VarChar(255)
+  education_field        String?                             @db.VarChar(255)
+  organization           String?                             @db.VarChar(255)
+  educational_program_id String?                             @db.VarChar(36)
+  educational_programs   educational_program?                @relation(fields: [educational_program_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  student_id             String                              @unique()
+  student                student?                            @relation(fields: [student_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@index([educational_program_id])
 }
@@ -56,39 +56,39 @@ model educational_program {
 }
 
 model enrollment {
-  id              String                 @id @default(uuid())
-  status          enrollment_status
-  order_number    String                 @db.VarChar(255)
-  enrollment_date DateTime               @db.DateTime(0)
-  expulsion_order String                 @db.VarChar(255)
-  expulsion_date  DateTime               @db.DateTime(0)
-  contract_number String                 @db.VarChar(255)
-  status_1c       enrollment_status_1c
-  scholarship     enrollment_scholarship
-  student_id      String                 @unique()
-  student         student?               @relation(fields: [student_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  id              String                  @id @default(uuid())
+  status          enrollment_status?
+  order_number    String?                 @db.VarChar(255)
+  enrollment_date DateTime?               @db.DateTime(0)
+  expulsion_order String?                 @db.VarChar(255)
+  expulsion_date  DateTime?               @db.DateTime(0)
+  contract_number String?                 @db.VarChar(255)
+  status_1c       enrollment_status_1c?
+  scholarship     enrollment_scholarship?
+  student_id      String?                 @unique()
+  student         student?                @relation(fields: [student_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model international_info {
-  id                                String                         @id @default(uuid())
-  RF_location                       international_info_RF_location
-  residence_place                   String                         @db.VarChar(255)
-  entry_date                        DateTime                       @db.DateTime(0)
-  departure_date                    DateTime                       @db.DateTime(0)
-  estimated_receipt_date            DateTime                       @db.DateTime(0)
-  actual_receipt_date_invitation    DateTime                       @db.DateTime(0)
-  application_source                String                         @db.VarChar(255)
-  visa_validity                     DateTime                       @db.DateTime(0)
-  transfer_to_international_service DateTime                       @db.DateTime(0)
-  transfer_to_MVD                   DateTime                       @db.DateTime(0)
-  student_id                        String                         @unique()
-  student                           student?                       @relation(fields: [student_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  id                                String                          @id @default(uuid())
+  RF_location                       international_info_RF_location?
+  residence_place                   String?                         @db.VarChar(255)
+  entry_date                        DateTime?                       @db.DateTime(0)
+  departure_date                    DateTime?                       @db.DateTime(0)
+  estimated_receipt_date            DateTime?                       @db.DateTime(0)
+  actual_receipt_date_invitation    DateTime?                       @db.DateTime(0)
+  application_source                String?                         @db.VarChar(255)
+  visa_validity                     DateTime?                       @db.DateTime(0)
+  transfer_to_international_service DateTime?                       @db.DateTime(0)
+  transfer_to_MVD                   DateTime?                       @db.DateTime(0)
+  student_id                        String                          @unique()
+  student                           student?                        @relation(fields: [student_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model metadata {
   id            String   @id @default(uuid())
-  is_archived   Boolean  @default(false)
-  comments      String   @db.VarChar(255)
+  is_archived   Boolean? @default(false)
+  comments      String?  @db.VarChar(255)
   created_at    DateTime @default(now()) @db.DateTime(6)
   updated_at    DateTime @updatedAt @db.DateTime(6)
   created_by_id String?  @db.VarChar(36)
@@ -101,36 +101,37 @@ model metadata {
 
 model old_education {
   id                               String   @id @default(uuid())
-  level_education                  String   @db.VarChar(255)
-  name_educational_institution     String   @db.VarChar(255)
-  location_educational_institution String   @db.VarChar(255)
-  graduation_year                  Int
-  direction_number                 String   @db.VarChar(255)
-  student_id                       String   @unique()
+  level_education                  String?  @db.VarChar(255)
+  name_educational_institution     String?  @db.VarChar(255)
+  location_educational_institution String?  @db.VarChar(255)
+  graduation_year                  Int?
+  direction_number                 String?  @db.VarChar(255)
+  student_id                       String?  @unique()
   student                          student? @relation(fields: [student_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model passport {
   id                  String          @id @default(uuid())
-  country             String          @db.VarChar(255)
+  country             String?         @db.VarChar(255)
   gender              passport_gender
-  birth_place         String          @db.VarChar(255)
-  citizenship         String          @db.VarChar(255)
+  birth_place         String?         @db.VarChar(255)
+  birth_date          DateTime        @db.DateTime(0)
+  citizenship         String?         @db.VarChar(255)
   passport_number     String          @db.VarChar(255)
   passport_expiration DateTime?       @db.DateTime(0)
-  passport_issued     String          @db.VarChar(255)
+  passport_issued     String?         @db.VarChar(255)
   passport_issue_date DateTime?       @db.DateTime(0)
   student_id          String          @unique()
   student             student?        @relation(fields: [student_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model payment {
-  id              String                 @id @default(uuid())
-  contract_amount Int
-  payment_status  payment_payment_status
+  id              String                  @id @default(uuid())
+  contract_amount Int?
+  payment_status  payment_payment_status?
   student_payment student_payment[]
-  student_id      String                 @unique()
-  student         student?               @relation(fields: [student_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  student_id      String                  @unique()
+  student         student?                @relation(fields: [student_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model student_payment {
@@ -138,7 +139,7 @@ model student_payment {
   ordinal    Int
   type       student_payment_type
   date       DateTime             @db.DateTime(0)
-  amount     Int?
+  amount     Int
   payment_id String?              @db.VarChar(36)
   payment    payment?             @relation(fields: [payment_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
@@ -150,7 +151,7 @@ model representative {
   name         String    @db.VarChar(255)
   phone_number String    @db.VarChar(255)
   first_email  String    @db.VarChar(255)
-  second_email String    @db.VarChar(255)
+  second_email String?   @db.VarChar(255)
   created_at   DateTime  @default(now()) @db.DateTime(6)
   updated_at   DateTime  @updatedAt @db.DateTime(6)
   student      student[]
@@ -175,7 +176,7 @@ model file {
 model student {
   id                 String              @id @default(uuid())
   latin_name         String              @db.VarChar(255)
-  russian_name       String              @db.VarChar(255)
+  russian_name       String?             @db.VarChar(255)
   contact            contact?
   current_education  current_education?
   international_info international_info?
