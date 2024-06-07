@@ -5,6 +5,7 @@ import { file_section, Prisma } from '@prisma/client';
 import { UploadFilesType } from './types/upload-files.type';
 import { PrismaService } from '../prisma.service';
 import { Response } from 'express';
+import { IRequestWithUser } from '../interfaces/Request.interface';
 
 @Injectable()
 export class FileService {
@@ -32,6 +33,32 @@ export class FileService {
     return 'This action adds a student struct';
   }
 
+  savePath(filesArray: Prisma.fileCreateManyInput[]) {
+    return this.prisma.file.createMany({
+      data: filesArray,
+    });
+  }
+
+  createStudentFiles(
+    student_id: string,
+    res: Response,
+    req: IRequestWithUser,
+    files: UploadFilesType,
+  ) {
+    this.createStudentStruct(student_id);
+    const pathArray: Prisma.fileCreateManyInput[] = this.upload(
+      student_id,
+      req.body.latin_name,
+      files,
+      req.user.id,
+    );
+
+    return this.savePath(pathArray).then(() => {
+      return res.status(200).json('Файлы загружены');
+    });
+    // return res.status(200).json('Файлы загружены');
+  }
+
   upload(
     student_id: string,
     student_name: string,
@@ -46,7 +73,7 @@ export class FileService {
       files[section]?.map((file) => {
         const splittedByDot = file.originalname.split('.');
         const fileExtension = splittedByDot[splittedByDot.length - 1];
-        file.filename = `${section} ${student_name} (${iterableCount}).${fileExtension}`;
+        file.filename = `${student_name} ${section} (${iterableCount}).${fileExtension}`;
         const newFilePath = `${rootStudentPath}/${section}/${file.filename}`;
         fs.rename(file.path, newFilePath, function (err) {
           if (err) throw err;
@@ -67,12 +94,6 @@ export class FileService {
     return result;
   }
 
-  savePath(filesArray: Prisma.fileCreateManyInput[]) {
-    return this.prisma.file.createMany({
-      data: filesArray,
-    });
-  }
-
   async download(id: string, res: Response) {
     const inputFile = await this.prisma.file.findFirst({
       where: { id },
@@ -80,8 +101,27 @@ export class FileService {
     /*const file = createReadStream(join(process.cwd(), inputFile!.path));
     file.pipe(res);
     return res.status(200);*/
-    res.download(inputFile!.path);
+    return res.download(inputFile!.path);
   }
 
-  uploadOne() {}
+  async findAll(id: string) {
+    const fileList = await this.prisma.file.findMany({
+      where: {
+        student_id: id,
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            role: true,
+            created_at: true,
+            updated_at: true,
+          },
+        },
+      }
+    });
+    return fileList;
+  }
 }
