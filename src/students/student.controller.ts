@@ -31,7 +31,7 @@ import { UploadFilesType } from '../file/types/upload-files.type';
 import { UploadFilesConst } from '../file/consts/upload-files.const';
 import { Response } from 'express';
 import { myStorage } from '../utils/multer-config.util';
-import { ApiConsumes, ApiExtraModels, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiConsumes, ApiExtraModels, ApiTags } from "@nestjs/swagger";
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller(['student'])
@@ -39,29 +39,23 @@ import { ApiConsumes, ApiExtraModels, ApiTags } from '@nestjs/swagger';
 export class StudentController {
   constructor(private readonly studentService: StudentService) {}
 
-  @Roles(UserRole.EDITOR)
-  @UseInterceptors(
-    FileFieldsInterceptor(UploadFilesConst, {
-      storage: myStorage,
-    }),
-  )
-  @ApiConsumes('multipart/form-data')
+  @Roles(UserRole.Editor)
   @Post()
   create(
     @Body() createStudentDto: CreateStudentDto,
     @Req() req: IRequestWithUser,
     @Res() res: Response,
-    @UploadedFiles() files: UploadFilesType,
   ) {
-    return this.studentService.create(createStudentDto, req, files, res);
+    return this.studentService.create(createStudentDto, req, res);
   }
 
   @Get()
   findAll(
+    @Query() filterParams: any,
     @Req() req: IRequestWithUser,
     @Query() pageOptionsDto: PageOptionsDto,
   ) {
-    return this.studentService.findAll(req, pageOptionsDto);
+    return this.studentService.findAll(filterParams, req, pageOptionsDto);
   }
 
   @Get(':id')
@@ -69,37 +63,37 @@ export class StudentController {
     return this.studentService.findOne(id);
   }
 
-  @Roles(UserRole.EDITOR)
+  @Roles(UserRole.Editor)
   @Patch(':id')
   update(@Param('id') id: string, @Body() createStudentDto: CreateStudentDto) {
     return this.studentService.update(id, createStudentDto);
   }
 
-  @Roles(UserRole.EDITOR)
+  @Roles(UserRole.Editor)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.studentService.remove(id);
   }
 
-  @Roles(UserRole.EDITOR)
+  @Roles(UserRole.Editor)
   @Patch('')
   archive(@Query() params: { is_archived: string; id: string }) {
     return this.studentService.archive(params);
   }
 
-  @Roles(UserRole.EDITOR)
+  @Roles(UserRole.Editor)
   @Post('/duplicate/:id')
   duplicate(@Param('id') id: string, @Req() req: IRequestWithUser) {
     return this.studentService.duplicate(id, req);
   }
 
-  @Roles(UserRole.EDITOR)
+  @Roles(UserRole.Editor)
   @Post('/import')
   import(@Req() req: IRequestWithUser) {
     return this.studentService.import(req);
   }
 
-  @Roles(UserRole.EDITOR)
+  @Roles(UserRole.Editor)
   @Get('/archived/get')
   findArchived(
     @Req() req: IRequestWithUser,

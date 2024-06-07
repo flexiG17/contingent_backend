@@ -1,91 +1,105 @@
-import { Injectable, Req } from '@nestjs/common';
-import { CreateStudentDto } from './dto/create-student.dto';
-import { IRequestWithUser } from '../interfaces/Request.interface';
-import { PageDto, PageMetaDto, PageOptionsDto } from '../utils/page/dtos';
-import * as XLSX from 'xlsx';
-import { PrismaService } from '../prisma.service';
-import { ParseStudentDatesUtil } from '../utils/parse-student-dates.util';
-import { file_section, Prisma } from '@prisma/client';
-import { GetStudentColumnsUtil } from '../utils/get-student-columns.util';
-import { FileService } from '../file/file.service';
-import { UploadFilesType } from '../file/types/upload-files.type';
-import { createReadStream } from 'fs';
-import { join } from 'path';
-import { FileInterface } from '../file/interfaces/file.interface';
-import { Response } from 'express';
+import { Injectable, Req } from "@nestjs/common";
+import { CreateStudentDto } from "./dto/create-student.dto";
+import { IRequestWithUser } from "../interfaces/Request.interface";
+import { PageDto, PageMetaDto, PageOptionsDto } from "../utils/page/dtos";
+import * as XLSX from "xlsx";
+import { PrismaService } from "../prisma.service";
+import { ParseStudentDatesUtil } from "../utils/parse-student-dates.util";
+import { file_section, Prisma } from "@prisma/client";
+import { GetStudentColumnsUtil } from "../utils/get-student-columns.util";
+import { FileService } from "../file/file.service";
+import { UploadFilesType } from "../file/types/upload-files.type";
+import { createReadStream } from "fs";
+import { join } from "path";
+import { FileInterface } from "../file/interfaces/file.interface";
+import { Response } from "express";
 
 @Injectable()
 export class StudentService {
   constructor(
     private prisma: PrismaService,
-    private fileService: FileService,
-  ) {}
+    private fileService: FileService
+  ) {
+  }
 
-  create(
+  async create(
     createStudentDto: CreateStudentDto,
     req: IRequestWithUser,
-    files: UploadFilesType,
-    res: Response,
+    res: Response
   ) {
-    const student_id = '28b12371-f075-4e5d-83a3-a19996689803';
-    const student_name = 'Name of student';
-    /*    const inputStudent = ParseStudentDatesUtil(createStudentDto);
-        const { latin_name, russian_name, agent_id, representative_id, tutor_id } =
-          inputStudent;
-        const student = this.prisma.student.create({
-          data: {
-            latin_name,
-            russian_name,
-            agent_id,
-            representative_id,
-            tutor_id,
-            contact: { create: inputStudent.contact },
-            current_education: {
-              create: inputStudent.current_education,
-            },
-            international_info: { create: inputStudent.international_info },
-            enrollment: { create: inputStudent.enrollment },
-            metadata: {
-              create: {
-                ...inputStudent.metadata,
-                created_by_id: req.user.id,
-              },
-            },
-            old_education: { create: inputStudent.old_education },
-            passport: { create: inputStudent.passport },
-            payment: {
-              create: {
-                ...inputStudent.payment,
-                student_payment: {
-                  create: inputStudent.payment?.student_payments,
-                },
-              },
-            },
-          },
-        });*/
+    // const inputStudent = ParseStudentDatesUtil(createStudentDto);
+    const inputStudent = { ...createStudentDto };
+    const { latin_name, russian_name, agent_id, representative_id, tutor_id } =
+      inputStudent;
+    const student = await this.prisma.student.create({
+      data: {
+        latin_name,
+        russian_name,
+        agent_id,
+        representative_id,
+        tutor_id,
+        contact: { create: inputStudent.contact },
+        current_education: {
+          create: inputStudent.current_education
+        },
+        international_info: { create: inputStudent.international_info },
+        enrollment: { create: inputStudent.enrollment },
+        metadata: {
+          create: {
+            ...inputStudent.metadata,
+            created_by_id: req.user.id
+          }
+        },
+        old_education: { create: inputStudent.old_education },
+        passport: { create: inputStudent.passport },
+        payment: {
+          create: {
+            ...inputStudent.payment,
+            student_payment: {
+              create: inputStudent.payment?.student_payments
+            }
+          }
+        }
+      }
+    });
 
-    this.fileService.createStudentStruct(student_id);
-    const pathArray: Prisma.fileCreateManyInput[] = this.fileService.upload(
-      student_id,
-      student_name,
-      files,
-      req.user.id,
-    );
-    return this.fileService.savePath(pathArray).then(() => {
-      return res.status(200).json('студент создан');
+    return res.status(200).json({
+      message: "Студент успешно создан!",
+      student
     });
   }
 
-  async findAll(@Req() res: IRequestWithUser, pageOptionsDto: PageOptionsDto) {
-    const columnsCount = await this.prisma.student.count();
+  async findAll(filterParams: any, @Req() res: IRequestWithUser, pageOptionsDto: PageOptionsDto) {
+    function makeUserSelect<T extends Prisma.studentWhereInput>(
+      where: Prisma.Subset<T, Prisma.studentWhereInput>
+    ): T {
+      return where;
+    }
 
+    delete filterParams.order;
+    delete filterParams.page;
+    delete filterParams.take;
+    let filterParamsWhereInput: Prisma.studentWhereInput = {};
+    Object.entries(filterParams).map((filter) => {
+      filterParamsWhereInput = {
+        ...filterParamsWhereInput,
+        [filter[0] as any]: makeUserSelect({
+          [(filter[1] as { field: any }).field]: {
+            equals: (filter[1] as { value: string }).value
+          }
+        })
+      };
+    });
+
+    const columnsCount = await this.prisma.student.count();
     const students = await this.prisma.student.findMany({
+      where: filterParamsWhereInput,
       include: {
         contact: true,
         current_education: {
           include: {
-            educational_programs: true,
-          },
+            educational_programs: true
+          }
         },
         international_info: true,
         enrollment: true,
@@ -98,26 +112,26 @@ export class StudentService {
                 email: true,
                 role: true,
                 created_at: true,
-                updated_at: true,
-              },
-            },
-          },
+                updated_at: true
+              }
+            }
+          }
         },
         old_education: true,
         passport: true,
         payment: {
           include: {
-            student_payment: true,
-          },
-        },
+            student_payment: true
+          }
+        }
       },
       skip: pageOptionsDto.skip,
       take: pageOptionsDto.take,
       orderBy: {
         metadata: {
-          created_at: pageOptionsDto.order,
-        },
-      },
+          created_at: pageOptionsDto.order
+        }
+      }
     });
 
     const itemCount = columnsCount;
@@ -136,8 +150,8 @@ export class StudentService {
         file: true,
         current_education: {
           include: {
-            educational_programs: true,
-          },
+            educational_programs: true
+          }
         },
         international_info: true,
         enrollment: true,
@@ -150,19 +164,19 @@ export class StudentService {
                 email: true,
                 role: true,
                 created_at: true,
-                updated_at: true,
-              },
-            },
-          },
+                updated_at: true
+              }
+            }
+          }
         },
         old_education: true,
         passport: true,
         payment: {
           include: {
-            student_payment: true,
-          },
-        },
-      },
+            student_payment: true
+          }
+        }
+      }
     });
   }
 
@@ -171,7 +185,8 @@ export class StudentService {
     const { latin_name, russian_name, agent_id, representative_id, tutor_id } =
       createStudentDto;
 
-    const inputStudent = ParseStudentDatesUtil(createStudentDto);
+    // const inputStudent = ParseStudentDatesUtil(createStudentDto);
+    const inputStudent = { ...createStudentDto };
     return this.prisma.student.update({
       where: { id },
       data: {
@@ -182,57 +197,57 @@ export class StudentService {
         tutor_id,
         contact: {
           update: {
-            data: inputStudent.contact,
-          },
+            data: inputStudent.contact
+          }
         },
         current_education: {
           update: {
-            data: inputStudent.current_education,
-          },
+            data: inputStudent.current_education
+          }
         },
         international_info: {
           update: {
-            data: inputStudent.international_info,
-          },
+            data: inputStudent.international_info
+          }
         },
         enrollment: {
           update: {
-            data: inputStudent.enrollment,
-          },
+            data: inputStudent.enrollment
+          }
         },
         metadata: {
           update: {
             data: {
               comments: inputStudent.metadata.comments,
-              is_archived: inputStudent.metadata.is_archived,
-            },
-          },
+              is_archived: inputStudent.metadata.is_archived
+            }
+          }
         },
         old_education: {
           update: {
-            data: inputStudent.old_education,
-          },
+            data: inputStudent.old_education
+          }
         },
         passport: {
           update: {
-            data: inputStudent.passport,
-          },
+            data: inputStudent.passport
+          }
         },
         payment: {
           update: {
             data: {
               payment_status: inputStudent.payment?.payment_status,
-              contract_amount: inputStudent.payment?.contract_amount,
-            },
-          },
-        },
-      },
+              contract_amount: inputStudent.payment?.contract_amount
+            }
+          }
+        }
+      }
     });
   }
 
   async remove(id: string) {
     return this.prisma.student.delete({
-      where: { id },
+      where: { id }
     });
   }
 
@@ -244,14 +259,14 @@ export class StudentService {
         metadata: {
           update: {
             data: {
-              is_archived: Boolean(is_archived),
-            },
-          },
-        },
+              is_archived: Boolean(is_archived)
+            }
+          }
+        }
       },
       include: {
-        metadata: true,
-      },
+        metadata: true
+      }
     });
   }
 
@@ -287,28 +302,28 @@ export class StudentService {
 
   async findArchived(
     @Req() res: IRequestWithUser,
-    pageOptionsDto: PageOptionsDto,
+    pageOptionsDto: PageOptionsDto
   ) {
     const columnsCount = await this.prisma.student.count({
       where: {
         metadata: {
-          is_archived: true,
-        },
-      },
+          is_archived: true
+        }
+      }
     });
 
     const students = await this.prisma.student.findMany({
       where: {
         metadata: {
-          is_archived: true,
-        },
+          is_archived: true
+        }
       },
       include: {
         contact: true,
         current_education: {
           include: {
-            educational_programs: true,
-          },
+            educational_programs: true
+          }
         },
         international_info: true,
         enrollment: true,
@@ -321,26 +336,26 @@ export class StudentService {
                 email: true,
                 role: true,
                 created_at: true,
-                updated_at: true,
-              },
-            },
-          },
+                updated_at: true
+              }
+            }
+          }
         },
         old_education: true,
         passport: true,
         payment: {
           include: {
-            student_payment: true,
-          },
-        },
+            student_payment: true
+          }
+        }
       },
       skip: pageOptionsDto.skip,
       take: pageOptionsDto.take,
       orderBy: {
         metadata: {
-          created_at: pageOptionsDto.order,
-        },
-      },
+          created_at: pageOptionsDto.order
+        }
+      }
     });
 
     const itemCount = columnsCount;
