@@ -4,6 +4,7 @@ import {
   Get,
   Post,
   Query,
+  Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -13,11 +14,14 @@ import { UserRole } from '../enums/role.enum';
 import { SystemSetupService } from './system-setup.service';
 import { Roles } from '../decorators/roles.decorator';
 import { StudentInterface } from '../interfaces/AllStudentsFields.interface';
-import { response } from 'express';
 import { Prisma } from '@prisma/client';
 import { ApiTags } from '@nestjs/swagger';
 import { PageOptionsDto } from '../utils/page/dtos';
 import { CreateStudentDto } from '../students/dto/create-student.dto';
+import { IRequestWithUser } from '../interfaces/Request.interface';
+import { CreateFileDto } from '../file/dto/create-file.dto';
+import { CreateMessageDto } from './dto/create-message.dto';
+import { Response } from 'express';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('system')
@@ -31,12 +35,23 @@ export class SystemSetupController {
   }
 
   @Post('/sendStudent')
-  sendMessage(@Query() res: Response) {
-    return this.systemSetupService.sendMessage(res);
+  sendMessage(
+    @Body() createMessageDto: CreateMessageDto,
+    @Req() req: IRequestWithUser,
+  ) {
+    return this.systemSetupService.sendMessage(createMessageDto, req);
   }
 
   @Get('/filter/struct')
   getFilterStruct() {
     return this.systemSetupService.getFilterStruct();
+  }
+
+  @Get('/export/xlsx')
+  downloadXlsx(
+    @Query() studentIds: Record<number, string>,
+    @Res() res: Response,
+  ) {
+    return this.systemSetupService.downloadXlsx(studentIds, res);
   }
 }

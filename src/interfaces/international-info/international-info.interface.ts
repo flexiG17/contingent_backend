@@ -1,4 +1,4 @@
-import { RfLocationEnum } from '../enums/international-info/rf-location.enum';
+import { RfLocationEnum } from '../../enums/international-info/rf-location.enum';
 import { international_info_RF_location } from '@prisma/client';
 
 export interface InternationalInfoInterface {

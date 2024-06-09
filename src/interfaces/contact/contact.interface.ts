@@ -1,4 +1,4 @@
-import { StudentInterface } from '../students/interfaces/student.interface';
+import { StudentInterface } from '../../students/interfaces/student.interface';
 
 export interface ContactInterface {
   id?: string;

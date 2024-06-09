@@ -6,10 +6,12 @@ import { StudentModule } from './students/student.module';
 import * as process from 'process';
 import { SystemSetupModule } from './system-setup/system-setup.module';
 import { FileModule } from './file/file.module';
+import { MailerModule } from '@nestjs-modules/mailer';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
+      envFilePath: '.env',
       isGlobal: true,
     }),
     UserModule,
@@ -17,6 +19,19 @@ import { FileModule } from './file/file.module';
     StudentModule,
     SystemSetupModule,
     FileModule,
+    MailerModule.forRoot({
+      transport: {
+        port: 25,
+        secure: false,
+        logger: true,
+        debug: true,
+        host: process.env.EMAIL_HOST,
+        auth: {
+          user: process.env.EMAIL_USERNAME,
+          pass: process.env.EMAIL_PASSWORD,
+        },
+      },
+    }),
   ],
 })
 export class AppModule {}

@@ -4,7 +4,7 @@ import {
   current_education_type,
 } from '@prisma/client';
 
-export interface CurrentEducationInterface {
+export class CurrentEducationInterface {
   id?: string;
   educational_program_id: string;
   type: current_education_type;

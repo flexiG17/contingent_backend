@@ -120,7 +120,7 @@ export class FileService {
             updated_at: true,
           },
         },
-      }
+      },
     });
     return fileList;
   }

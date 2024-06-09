@@ -31,7 +31,12 @@ import { UploadFilesType } from '../file/types/upload-files.type';
 import { UploadFilesConst } from '../file/consts/upload-files.const';
 import { Response } from 'express';
 import { myStorage } from '../utils/multer-config.util';
-import { ApiBearerAuth, ApiConsumes, ApiExtraModels, ApiTags } from "@nestjs/swagger";
+import {
+  ApiBearerAuth,
+  ApiConsumes,
+  ApiExtraModels,
+  ApiTags,
+} from '@nestjs/swagger';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller(['student'])
@@ -77,7 +82,7 @@ export class StudentController {
 
   @Roles(UserRole.Editor)
   @Patch('')
-  archive(@Query() params: { is_archived: string; id: string }) {
+  archive(@Query() params: { is_archived: boolean; id: string }) {
     return this.studentService.archive(params);
   }
 

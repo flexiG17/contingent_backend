@@ -3,7 +3,7 @@ export interface MetadataInterface {
   comments: string;
   created_at: Date;
   updated_at: Date;
-  created_by_id: string;
+  created_by_id?: string;
   is_archived: boolean;
   student_id?: string;
 }
