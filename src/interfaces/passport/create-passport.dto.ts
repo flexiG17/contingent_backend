@@ -23,7 +23,6 @@ export class CreatePassportDto implements PassportInterface {
     description: 'Пол',
     enum: passport_gender,
   })
-  @IsOptional()
   @IsEnum(passport_gender)
   gender: passport_gender;
 

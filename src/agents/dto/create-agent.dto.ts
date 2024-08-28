@@ -1,7 +1,30 @@
-export class CreateAgentDto {
-  id: string;
+import { AgentInterface } from '../interfaces/agent.interface';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsEmail, IsMobilePhone, IsOptional, IsString } from 'class-validator';
+
+export class CreateAgentDto implements AgentInterface {
+  @ApiProperty({ example: 'Khaled Salah', description: 'Agent name' })
+  @IsString()
   name: string;
-  phoneNumber: string;
-  firstEmail: string;
-  secondEmail: string;
+
+  @ApiProperty({ example: '8800553535', description: 'Agent phone number' })
+  @IsMobilePhone()
+  @IsOptional()
+  phone_number: string;
+
+  @ApiProperty({
+    example: 'first@email.com',
+    description: 'first agent email',
+  })
+  @IsEmail()
+  @IsOptional()
+  first_email: string;
+
+  @ApiProperty({
+    example: 'second@email.com',
+    description: 'second agent email',
+  })
+  @IsEmail()
+  @IsOptional()
+  second_email: string;
 }
