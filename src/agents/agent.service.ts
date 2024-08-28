@@ -1,27 +1,54 @@
 import { Injectable } from '@nestjs/common';
 import { CreateAgentDto } from './dto/create-agent.dto';
 import { UpdateAgentDto } from './dto/update-agent.dto';
+import { PrismaService } from '../prisma.service';
+import { PageDto, PageMetaDto, PageOptionsDto } from '../utils/page/dtos';
 
 @Injectable()
 export class AgentService {
-  constructor() {}
+  constructor(private prisma: PrismaService) {}
   create(createAgentDto: CreateAgentDto) {
-    return 'This action adds a new agents';
+    return this.prisma.agent.create({
+      data: createAgentDto,
+    });
   }
 
-  findAll() {
-    return `This action returns all agent`;
+  async findAll(pageOptionsDto: PageOptionsDto) {
+    const columnsCount = await this.prisma.agent.count();
+    const agents = await this.prisma.agent.findMany({
+      skip: pageOptionsDto.skip,
+      take: pageOptionsDto.take,
+      orderBy: {
+        created_at: pageOptionsDto.order,
+      },
+    });
+    const itemCount = columnsCount;
+    const entities = agents;
+
+    const pageMetaDto = new PageMetaDto({
+      itemCount,
+      pageOptionsDto,
+    });
+
+    return new PageDto(entities, pageMetaDto);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} agent`;
+  findOne(id: string) {
+    return this.prisma.agent.findFirst({
+      where: { id },
+    });
   }
 
-  update(id: number, updateAgentDto: UpdateAgentDto) {
-    return `This action updates a #${id} agent`;
+  update(id: string, updateAgentDto: UpdateAgentDto) {
+    return this.prisma.agent.update({
+      where: { id },
+      data: updateAgentDto,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} agent`;
+  remove(id: string) {
+    return this.prisma.agent.delete({
+      where: { id },
+    });
   }
 }

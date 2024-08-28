@@ -7,6 +7,8 @@ import * as process from 'process';
 import { SystemSetupModule } from './system-setup/system-setup.module';
 import { FileModule } from './file/file.module';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { AgentModule } from './agents/agent.module';
+import { RepresentativeModule } from './representatives/representative.module';
 
 @Module({
   imports: [
@@ -15,6 +17,8 @@ import { MailerModule } from '@nestjs-modules/mailer';
       isGlobal: true,
     }),
     UserModule,
+    AgentModule,
+    RepresentativeModule,
     AuthModule,
     StudentModule,
     SystemSetupModule,
