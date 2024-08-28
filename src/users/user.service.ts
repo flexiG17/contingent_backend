@@ -95,7 +95,16 @@ export class UserService {
         updated_at: true,
         user: {
           include: {
-            user: true,
+            user: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+                role: true,
+                created_at: true,
+                updated_at: true,
+              },
+            },
           },
         },
       },
@@ -138,7 +147,7 @@ export class UserService {
     });
   }
 
-  changeSelfPassword(
+  async changeSelfPassword(
     changeUserPasswordDto: ChangeUserPasswordDto,
     @Req() req: IRequestWithUser,
     @Res() res: Response,
@@ -154,16 +163,13 @@ export class UserService {
           return res.status(HttpStatus.CONFLICT).json('Пароли не совпадают');
         }
       });
-    return this.prisma.user
-      .update({
-        where: { id: req.user.id },
-        data: {
-          password: bcrypt.hashSync(changeUserPasswordDto.password!, 10),
-        },
-      })
-      .then(() => {
-        return res.status(HttpStatus.OK).json('Пароль успешно изменён');
-      });
+    await this.prisma.user.update({
+      where: { id: req.user.id },
+      data: {
+        password: bcrypt.hashSync(changeUserPasswordDto.password!, 10),
+      },
+    });
+    return res.status(HttpStatus.OK).json('Пароль успешно изменён');
   }
 
   remove(id: string) {
