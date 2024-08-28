@@ -1,29 +1,54 @@
 import { Injectable } from '@nestjs/common';
 import { CreateRepresentativeDto } from './dto/create-representative.dto';
 import { UpdateRepresentativeDto } from './dto/update-representative.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { PrismaService } from '../prisma.service';
+import { PageDto, PageMetaDto, PageOptionsDto } from '../utils/page/dtos';
 
 @Injectable()
 export class RepresentativeService {
-  constructor() {}
+  constructor(private prisma: PrismaService) {}
   create(createRepresentativeDto: CreateRepresentativeDto) {
-    return 'This action adds a new representatives';
+    return this.prisma.representative.create({
+      data: createRepresentativeDto,
+    });
   }
 
-  findAll() {
-    return `This action returns all representative`;
+  async findAll(pageOptionsDto: PageOptionsDto) {
+    const columnsCount = await this.prisma.representative.count();
+    const representatives = await this.prisma.representative.findMany({
+      skip: pageOptionsDto.skip,
+      take: pageOptionsDto.take,
+      orderBy: {
+        created_at: pageOptionsDto.order,
+      },
+    });
+    const itemCount = columnsCount;
+    const entities = representatives;
+
+    const pageMetaDto = new PageMetaDto({
+      itemCount,
+      pageOptionsDto,
+    });
+
+    return new PageDto(entities, pageMetaDto);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} representative`;
+  findOne(id: string) {
+    return this.prisma.representative.findFirst({
+      where: { id },
+    });
   }
 
-  update(id: number, updateRepresentativeDto: UpdateRepresentativeDto) {
-    return `This action updates a #${id} representative`;
+  update(id: string, updateRepresentativeDto: UpdateRepresentativeDto) {
+    return this.prisma.representative.update({
+      where: { id },
+      data: updateRepresentativeDto,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} representative`;
+  remove(id: string) {
+    return this.prisma.representative.delete({
+      where: { id },
+    });
   }
 }

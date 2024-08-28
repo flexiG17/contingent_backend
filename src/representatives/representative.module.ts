@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { RepresentativeService } from './representative.service';
 import { RepresentativeController } from './representative.controller';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { PrismaService } from '../prisma.service';
 
 @Module({
   imports: [],
   controllers: [RepresentativeController],
-  providers: [RepresentativeService],
+  providers: [RepresentativeService, PrismaService],
 })
 export class RepresentativeModule {}

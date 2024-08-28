@@ -1,9 +1,9 @@
-import { UserRole } from '../../enums/role.enum';
-
 export interface RepresentativeInterface {
-  id: string;
+  id?: string;
   name: string;
-  phoneNumber: string;
-  firstEmail: string;
-  secondEmail: string;
+  phone_number: string;
+  first_email: string;
+  second_email: string;
+  created_at?: Date;
+  updated_at?: Date;
 }
