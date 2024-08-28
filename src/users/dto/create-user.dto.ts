@@ -2,12 +2,10 @@ import { user_role } from '@prisma/client';
 import {
   IsEmail,
   IsEnum,
-  IsNumber,
   IsString,
   IsStrongPassword,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { PrimaryGeneratedColumn } from 'typeorm';
 
 export class CreateUserDto {
   /*@ApiProperty({
@@ -24,7 +22,7 @@ export class CreateUserDto {
   email: string;
   @ApiProperty({ example: '11111111', description: 'user password' })
   @IsStrongPassword({
-    minLength: 4,
+    minLength: 8,
     minNumbers: 2,
   })
   password: string;

@@ -1,4 +1,3 @@
-import { Column, PrimaryGeneratedColumn } from 'typeorm';
 import { MetadataInterface } from './metadata.interface';
 import { ApiProperty } from '@nestjs/swagger';
 import {

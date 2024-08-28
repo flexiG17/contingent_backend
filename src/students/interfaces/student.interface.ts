@@ -1,4 +1,3 @@
-import { Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { InternationalInfoInterface } from '../../interfaces/international-info/international-info.interface';
 import { PassportInterface } from '../../interfaces/passport/passport.interface';
 import { EnrollmentInterface } from '../../interfaces/enrollment/enrollment.interfaces';

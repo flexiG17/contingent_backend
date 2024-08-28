@@ -15,7 +15,6 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { PrimaryGeneratedColumn } from 'typeorm';
 import { Expose, Type } from 'class-transformer';
 import { CreateContactDto } from '../../interfaces/contact/create-contact.dto';
 import { CreateCurrentEducationDto } from '../../interfaces/current-educations/create-current-education.dto';
@@ -24,13 +23,11 @@ import { CreateEnrollmentDto } from '../../interfaces/enrollment/create-enrollme
 import { CreateMetadataDto } from '../../interfaces/metadata/create-metadata.dto';
 import { CreateOldEducationDto } from '../../interfaces/old-education/create-old-education.dto';
 import { CreatePassportDto } from '../../interfaces/passport/create-passport.dto';
-import { UUID } from 'typeorm/driver/mongodb/bson.typings';
 import { CreateStudentPaymentDto } from '../../interfaces/payment/student-payment/create-student-payment.dto';
 import { CreatePaymentDto } from '../../interfaces/payment/create-payment.dto';
 import { StudentInterface } from '../interfaces/student.interface';
 
 export class CreateStudentDto implements StudentInterface {
-  // id?: string;
   @ApiProperty({ example: 'Pavel Durov', description: 'student latin name' })
   @IsString()
   latin_name: string;
